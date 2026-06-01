@@ -8,7 +8,7 @@ export default defineConfig({
     outDir: "build",
     ssr: true,
     lib: {
-      entry: { "nestjs-tg-bot": "src/main.ts" },
+      entry: { "nestjs-grammy": "src/main.ts" },
       formats: ["es", "cjs"],
       fileName: (format, entryName) => `${entryName}.${format === "cjs" ? "cjs" : "js"}`
     }

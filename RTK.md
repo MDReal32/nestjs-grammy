@@ -11,7 +11,7 @@ Read these first when planning or implementing:
 - `README.md` - project behavior and usage.
 - `package.json` - scripts, dependencies, and package boundaries.
 - `RULES.md` - repository governance, code style, and module boundaries.
-- `packages/nestjs-tg-bot/src/` - publishable library source.
+- `packages/nestjs-grammy/src/` - publishable library source.
 - `tests/` - existing test patterns.
 - `.planning/AGENT_RULES.md` - agent workflow and verification discipline.
 - `.planning/DOC_STANDARDS.md` - documentation layer expectations.

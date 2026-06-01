@@ -24,7 +24,7 @@
 
     "baseUrl": "./",
     "paths": {
-      "@mdreal/nestjs-tg-bot": ["src/main.ts"]
+      "@mdreal/nestjs-grammy": ["src/main.ts"]
     }
   },
   "include": ["src"]

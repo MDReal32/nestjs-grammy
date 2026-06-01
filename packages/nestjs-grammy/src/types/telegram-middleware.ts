@@ -28,7 +28,7 @@ import type { Context, NextFunction } from "grammy";
  * @example
  * ```ts
  * import { Injectable } from "@nestjs/common";
- * import { TelegramMiddleware } from "@mdreal/nestjs-tg-bot";
+ * import { TelegramMiddleware } from "@mdreal/nestjs-grammy";
  * import type { Context, NextFunction } from "grammy";
  *
  * @Injectable()

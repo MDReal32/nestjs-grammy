@@ -1,5 +1,5 @@
 {
-  "name": "@mdreal/nestjs-tg-bot",
+  "name": "@mdreal/nestjs-grammy",
   "version": "0.0.18",
   "description": "NestJS module for building Telegram bots with grammY. Supports multiple bots, decorators, injection, polling, and webhooks.",
   "keywords": [
@@ -10,27 +10,27 @@
     "decorators",
     "module"
   ],
-  "homepage": "https://github.com/MDReal32/nestjs-tg-bot#readme",
+  "homepage": "https://github.com/MDReal32/nestjs-grammy#readme",
   "bugs": {
-    "url": "https://github.com/MDReal32/nestjs-tg-bot/issues"
+    "url": "https://github.com/MDReal32/nestjs-grammy/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/MDReal32/nestjs-tg-bot.git"
+    "url": "https://github.com/MDReal32/nestjs-grammy.git"
   },
   "license": "Apache-2.0",
   "author": "MDReal",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./build/nestjs-tg-bot.d.ts",
-      "import": "./build/nestjs-tg-bot.js",
-      "require": "./build/nestjs-tg-bot.cjs"
+      "types": "./build/nestjs-grammy.d.ts",
+      "import": "./build/nestjs-grammy.js",
+      "require": "./build/nestjs-grammy.cjs"
     },
     "./schematics": {}
   },
-  "main": "./build/nestjs-tg-bot.js",
-  "types": "./build/nestjs-tg-bot.d.ts",
+  "main": "./build/nestjs-grammy.js",
+  "types": "./build/nestjs-grammy.d.ts",
   "files": [
     "build"
   ],

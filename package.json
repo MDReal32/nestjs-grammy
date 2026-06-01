@@ -1,12 +1,12 @@
 {
-  "name": "nestjs-tg-bot-monorepo",
+  "name": "@mdreal/monorepo",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm --filter @mdreal/nestjs-tg-bot build",
+    "build": "pnpm --filter @mdreal/nestjs-grammy build",
     "format": "prettier --write .",
     "lint": "prettier --check .",
-    "typecheck": "pnpm --filter @mdreal/nestjs-tg-bot typecheck"
+    "typecheck": "pnpm --filter @mdreal/nestjs-grammy typecheck"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
