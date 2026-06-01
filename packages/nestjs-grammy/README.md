@@ -1,8 +1,8 @@
-# @mdreal/nestjs-tg-bot
+# @mdreal/nestjs-grammy
 
-[![npm version](https://img.shields.io/npm/v/@mdreal/nestjs-tg-bot)](https://www.npmjs.com/package/@mdreal/nestjs-tg-bot)
+[![npm version](https://img.shields.io/npm/v/@mdreal/nestjs-grammy)](https://www.npmjs.com/package/@mdreal/nestjs-grammy)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE)
-[![Downloads](https://img.shields.io/npm/dw/@mdreal/nestjs-tg-bot)](https://www.npmjs.com/package/@mdreal/nestjs-tg-bot)
+[![Downloads](https://img.shields.io/npm/dw/@mdreal/nestjs-grammy)](https://www.npmjs.com/package/@mdreal/nestjs-grammy)
 
 **A fully-typed, decorator-driven [NestJS](https://nestjs.com) module for building Telegram bots with [grammY](https://grammy.dev/).**
 
@@ -46,7 +46,7 @@ This package provides a clean, modular approach to integrating grammY bots into 
 ## 📦 Installation
 
 ```bash
-pnpm add @mdreal/nestjs-tg-bot
+pnpm add @mdreal/nestjs-grammy
 # peer dependencies (required in your app)
 pnpm add @nestjs/common @nestjs/core reflect-metadata
 ```
@@ -58,7 +58,7 @@ pnpm add @nestjs/common @nestjs/core reflect-metadata
 ### Single Bot Setup
 
 ```ts
-import { TelegramModule } from "@mdreal/nestjs-tg-bot";
+import { TelegramModule } from "@mdreal/nestjs-grammy";
 import { Module } from "@nestjs/common";
 
 @Module({
@@ -79,7 +79,7 @@ export class AppModule {}
 ```ts
 import type { Context } from "grammy";
 
-import { Command, Help, Start } from "@mdreal/nestjs-tg-bot";
+import { Command, Help, Start } from "@mdreal/nestjs-grammy";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -110,7 +110,7 @@ export class BotHandlers {
 ```ts
 import type { Context } from "grammy";
 
-import { Command, Scope } from "@mdreal/nestjs-tg-bot";
+import { Command, Scope } from "@mdreal/nestjs-grammy";
 import { Injectable } from "@nestjs/common";
 
 @Module({
@@ -147,7 +147,7 @@ Mark any method with `@Conversation()` and the binder will automatically install
 import type { Context } from "grammy";
 
 import type { Conversation as Conv, ConversationFlavor } from "@grammyjs/conversations";
-import { Conversation, Start } from "@mdreal/nestjs-tg-bot";
+import { Conversation, Start } from "@mdreal/nestjs-grammy";
 import { Injectable } from "@nestjs/common";
 
 type MyContext = ConversationFlavor<Context>;
@@ -178,7 +178,7 @@ export class BotHandlers {
 ```ts
 import type { Api, Bot } from "grammy";
 
-import { InjectApi, InjectBot } from "@mdreal/nestjs-tg-bot";
+import { InjectApi, InjectBot } from "@mdreal/nestjs-grammy";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()

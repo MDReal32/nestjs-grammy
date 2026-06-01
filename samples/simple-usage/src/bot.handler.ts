@@ -1,6 +1,6 @@
 import { Context, InlineKeyboard } from "grammy";
 
-import { KeyboardCallback, Start } from "@mdreal/nestjs-tg-bot";
+import { KeyboardCallback, Start } from "@mdreal/nestjs-grammy";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()

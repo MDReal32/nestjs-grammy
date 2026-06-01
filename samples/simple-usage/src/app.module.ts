@@ -1,4 +1,4 @@
-import { TelegramModule } from "@mdreal/nestjs-tg-bot";
+import { TelegramModule } from "@mdreal/nestjs-grammy";
 import { Module } from "@nestjs/common";
 
 import { BotHandler } from "./bot.handler";
