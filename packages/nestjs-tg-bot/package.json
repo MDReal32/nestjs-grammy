@@ -1,0 +1,77 @@
+{
+  "name": "@mdreal/nestjs-tg-bot",
+  "version": "0.0.18",
+  "description": "NestJS module for building Telegram bots with grammY. Supports multiple bots, decorators, injection, polling, and webhooks.",
+  "keywords": [
+    "nestjs",
+    "telegram",
+    "grammy",
+    "bot",
+    "decorators",
+    "module"
+  ],
+  "homepage": "https://github.com/MDReal32/nestjs-tg-bot#readme",
+  "bugs": {
+    "url": "https://github.com/MDReal32/nestjs-tg-bot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MDReal32/nestjs-tg-bot.git"
+  },
+  "license": "Apache-2.0",
+  "author": "MDReal",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./build/nestjs-tg-bot.d.ts",
+      "import": "./build/nestjs-tg-bot.js",
+      "require": "./build/nestjs-tg-bot.cjs"
+    },
+    "./schematics": {}
+  },
+  "main": "./build/nestjs-tg-bot.js",
+  "types": "./build/nestjs-tg-bot.d.ts",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "lint": "prettier --check .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@grammyjs/runner": "^2.0.3",
+    "@swc/helpers": "^0.5.19",
+    "grammy": "^1.38.3",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@grammyjs/conversations": "^2.1.1",
+    "@swc/core": "^1.15.18",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/node": "^24.10.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-packagejson": "^2.5.19",
+    "typescript": "^5.8.3",
+    "unplugin-swc": "^1.5.9",
+    "vite": "^7.2.2",
+    "vite-plugin-dts": "^4.5.4"
+  },
+  "peerDependencies": {
+    "@grammyjs/conversations": "^2.0.0",
+    "@nestjs/common": "^10 || ^11",
+    "@nestjs/core": "^10 || ^11",
+    "reflect-metadata": "^0.2"
+  },
+  "peerDependenciesMeta": {
+    "@grammyjs/conversations": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
