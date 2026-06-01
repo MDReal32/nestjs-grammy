@@ -43,11 +43,13 @@ import type { RateLimitOptions } from "../types";
  * @returns A `MiddlewareFn` if enabled, otherwise `undefined`.
  */
 export const makeRateLimit = <C extends GrammyContext = GrammyContext>(opts?: RateLimitOptions<C>) => {
-  if (!opts?.enabled) return undefined;
+  if (!opts?.enabled) {
+    return undefined;
+  }
 
   const windowMs = opts.windowMs ?? 10_000;
   const max = opts.max ?? 20;
-  const keyFn = opts.key ?? ((ctx: C) => String((ctx as any)?.from?.id ?? "anon"));
+  const keyFn = opts.key ?? ((ctx: C) => String(ctx.from?.id ?? "anon"));
 
   const hits = new Map<string, { count: number; reset: number }>();
 
@@ -65,7 +67,10 @@ export const makeRateLimit = <C extends GrammyContext = GrammyContext>(opts?: Ra
     entry.count += 1;
     hits.set(key, entry);
 
-    if (entry.count > max) return; // soft-drop
+    if (entry.count > max) {
+      return;
+    }
+
     await next();
   };
 };

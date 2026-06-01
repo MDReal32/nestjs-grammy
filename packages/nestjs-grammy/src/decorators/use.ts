@@ -49,8 +49,8 @@ export const Use =
         (Reflect.getMetadata(META_KEYS.METHOD_USE, target, propertyKey) as MiddlewareFn<C>[] | undefined) ?? [];
       Reflect.defineMetadata(META_KEYS.METHOD_USE, [...list, ...middlewares], target, propertyKey);
     } else {
-      const ctor = target as Function;
-      const middlewares = (Reflect.getMetadata(META_KEYS.CLASS_USE, ctor) as MiddlewareFn<C>[] | undefined) ?? [];
-      Reflect.defineMetadata(META_KEYS.CLASS_USE, [...middlewares, ...middlewares], ctor);
+      const ctor = target.constructor;
+      const list = (Reflect.getMetadata(META_KEYS.CLASS_USE, ctor) as MiddlewareFn<C>[] | undefined) ?? [];
+      Reflect.defineMetadata(META_KEYS.CLASS_USE, [...list, ...middlewares], ctor);
     }
   };

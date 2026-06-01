@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Api, Bot, type Context as GrammyContext, webhookCallback } from "grammy";
+import { Bot, type Context as GrammyContext, webhookCallback } from "grammy";
 
 import { run, sequentialize } from "@grammyjs/runner";
 
@@ -56,7 +56,9 @@ export class TelegramBotRunner<C extends GrammyContext = GrammyContext> {
    * @throws If `name` or `token` are missing, or if the bot name already exists.
    */
   constructor(opts: BotInstanceOptions<C>, registry: TelegramBotsRegistry<C>) {
-    if (!opts?.name) throw new Error("telegram: 'name' is required");
+    if (!opts?.name) {
+      throw new Error("telegram: 'name' is required");
+    }
     if (!opts?.token) {
       throw new Error(`telegram: token is required for "${opts?.name}"`);
     }
@@ -88,7 +90,7 @@ export class TelegramBotRunner<C extends GrammyContext = GrammyContext> {
 
     const entry: BotEntry<C> = Object.freeze({
       bot: this.bot,
-      api: this.bot.api as unknown as Api,
+      api: this.bot.api,
       callback: this.callback,
       options: Object.freeze({ ...this.opts })
     });
@@ -118,21 +120,26 @@ export class TelegramBotRunner<C extends GrammyContext = GrammyContext> {
 
     // Apply API plugins
     for (const plug of this.opts.apiPlugins ?? []) {
-      plug(this.bot.api as unknown as Api);
+      plug(this.bot.api);
     }
 
     // Apply rate limiter first, then user middlewares
     const rl = makeRateLimit<C>(this.opts.rateLimit);
-    if (rl) this.bot.use(rl);
-    for (const mw of this.opts.middlewares ?? []) this.bot.use(mw);
+    if (rl) {
+      this.bot.use(rl);
+    }
+
+    for (const mw of this.opts.middlewares ?? []) {
+      this.bot.use(mw);
+    }
 
     // Global error boundary
     this.bot.catch(err => {
       if (this.opts.onError) {
         return this.opts.onError(err.error, err.ctx as C);
       }
-      const e = err.error as unknown as Error | undefined;
-      this.logger.error(e?.message ?? "Unhandled bot error", e?.stack);
+      const error = err.error instanceof Error ? err.error : undefined;
+      this.logger.error(error?.message ?? "Unhandled bot error", error?.stack);
     });
 
     this.mode = resolveMode(this.opts);

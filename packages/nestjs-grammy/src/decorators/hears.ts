@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { HearsMeta } from "../types";
 import { META_KEYS } from "./meta-keys";
 
 /**
@@ -41,9 +42,9 @@ import { META_KEYS } from "./meta-keys";
  * @returns Method decorator storing metadata for `TelegramDecoratorsBinder`.
  */
 export const Hears = (trigger: string | RegExp) => (target: object, propertyKey: string | symbol) => {
-  const ctor = (target as any).constructor ?? target;
+  const ctor = target.constructor;
 
-  const hears = (Reflect.getMetadata(META_KEYS.HEARS, ctor) as any[] | undefined) ?? [];
+  const hears = (Reflect.getMetadata(META_KEYS.HEARS, ctor) as HearsMeta[] | undefined) ?? [];
   hears.push({ method: propertyKey, trigger });
   Reflect.defineMetadata(META_KEYS.HEARS, hears, ctor);
 };

@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { KeyboardCallbackMeta } from "../types";
 import { META_KEYS } from "./meta-keys";
 
 /**
- * `@KeyboardCallbacks` decorator
+ * `@KeyboardCallback` decorator
  *
  * Registers a handler method for callback queries matching the given trigger.
  * Triggers can be a **string** (exact match) or a **regular expression**.
@@ -25,12 +26,12 @@ import { META_KEYS } from "./meta-keys";
  * ```ts
  * @Injectable()
  * export class BotHandlers {
- *   @KeyboardCallbacks("confirm")
+ *   @KeyboardCallback("confirm")
  *   async onConfirm(ctx: Context) {
  *     await ctx.answerCallbackQuery("Confirmed!");
  *   }
  *
- *   @KeyboardCallbacks(/delete_.+/)
+ *   @KeyboardCallback(/delete_.+/)
  *   async onDelete(ctx: Context) {
  *     await ctx.answerCallbackQuery("Deleted!");
  *   }
@@ -41,9 +42,10 @@ import { META_KEYS } from "./meta-keys";
  * @returns Method decorator storing metadata for `TelegramDecoratorsBinder`.
  */
 export const KeyboardCallback = (trigger: string | RegExp) => (target: object, propertyKey: string | symbol) => {
-  const ctor = (target as any).constructor ?? target;
+  const ctor = target.constructor;
 
-  const callbacks = (Reflect.getMetadata(META_KEYS.KEYBOARD_CALLBACKS, ctor) as any[] | undefined) ?? [];
+  const callbacks =
+    (Reflect.getMetadata(META_KEYS.KEYBOARD_CALLBACKS, ctor) as KeyboardCallbackMeta[] | undefined) ?? [];
   callbacks.push({ method: propertyKey, callback: trigger });
   Reflect.defineMetadata(META_KEYS.KEYBOARD_CALLBACKS, callbacks, ctor);
 };

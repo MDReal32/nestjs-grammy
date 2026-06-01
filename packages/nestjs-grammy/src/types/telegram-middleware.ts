@@ -16,12 +16,13 @@
 import type { Context, NextFunction } from "grammy";
 
 /**
- * Interface for bot-level middleware providers.
+ * Interface for class-based grammY middleware adapters.
  *
- * Implement this interface in any `@Injectable()` provider and register it
- * via `BotModule.configure(consumer)` to apply it to specific bots.
+ * Implement this interface in any `@Injectable()` provider when you want
+ * a Nest-managed class to expose a grammY-compatible middleware function.
  *
- * Mirrors the NestJS `NestMiddleware` pattern.
+ * Pass the bound `use` method through `BotInstanceOptions.middlewares`
+ * or `@Use()` when registering middleware.
  *
  * @typeParam C - grammY context type (defaults to `Context`).
  *
@@ -34,7 +35,7 @@ import type { Context, NextFunction } from "grammy";
  * @Injectable()
  * export class LoggingMiddleware implements TelegramMiddleware {
  *   use(ctx: Context, next: NextFunction) {
- *     console.log(`[${ctx.updateType}] from ${ctx.from?.id}`);
+ *     void ctx.updateType;
  *     return next();
  *   }
  * }

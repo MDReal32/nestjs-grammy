@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { FilterQuery } from "grammy";
 
 export interface OnMeta {
   method: string | symbol;
-  filter: string;
+  filter: FilterQuery;
 }

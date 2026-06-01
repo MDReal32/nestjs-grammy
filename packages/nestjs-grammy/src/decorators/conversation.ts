@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { ConversationMeta } from "../types";
 import { META_KEYS } from "./meta-keys";
 
 /**
@@ -51,10 +52,10 @@ import { META_KEYS } from "./meta-keys";
  *               Defaults to the method name if omitted.
  */
 export const Conversation = (name?: string) => (target: object, propertyKey: string | symbol) => {
-  const ctor = (target as any).constructor ?? target;
-  const convName = name ?? (propertyKey as string);
+  const ctor = target.constructor;
+  const convName = name ?? String(propertyKey);
 
-  const conversations = (Reflect.getMetadata(META_KEYS.CONVERSATIONS, ctor) as any[] | undefined) ?? [];
+  const conversations = (Reflect.getMetadata(META_KEYS.CONVERSATIONS, ctor) as ConversationMeta[] | undefined) ?? [];
   conversations.push({ method: propertyKey, name: convName });
   Reflect.defineMetadata(META_KEYS.CONVERSATIONS, conversations, ctor);
 };

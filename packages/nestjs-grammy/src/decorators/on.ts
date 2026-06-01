@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { FilterQuery } from "grammy";
+
+import type { OnMeta } from "../types";
 import { META_KEYS } from "./meta-keys";
 
 /**
@@ -40,10 +43,10 @@ import { META_KEYS } from "./meta-keys";
  * @param filter - grammY filter string (e.g. `"message:text"`).
  * @returns Method decorator storing metadata for `TelegramDecoratorsBinder`.
  */
-export const On = (filter: string) => (target: object, propertyKey: string | symbol) => {
-  const ctor = (target as any).constructor ?? target;
+export const On = (filter: FilterQuery) => (target: object, propertyKey: string | symbol) => {
+  const ctor = target.constructor;
 
-  const ons = (Reflect.getMetadata(META_KEYS.ON, ctor) as any[] | undefined) ?? [];
+  const ons = (Reflect.getMetadata(META_KEYS.ON, ctor) as OnMeta[] | undefined) ?? [];
   ons.push({ method: propertyKey, filter });
   Reflect.defineMetadata(META_KEYS.ON, ons, ctor);
 };

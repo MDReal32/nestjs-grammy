@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { CommandOptions } from "../types";
+import type { CommandMeta, CommandOptions } from "../types";
 import { META_KEYS } from "./meta-keys";
 
 /**
@@ -38,9 +38,9 @@ import { META_KEYS } from "./meta-keys";
  */
 export const Command =
   (command: string, options?: CommandOptions) => (target: object, propertyKey: string | symbol) => {
-    const ctor = (target as any).constructor ?? target;
+    const ctor = target.constructor;
 
-    const commands = (Reflect.getMetadata(META_KEYS.COMMANDS, ctor) as any[] | undefined) ?? [];
+    const commands = (Reflect.getMetadata(META_KEYS.COMMANDS, ctor) as CommandMeta[] | undefined) ?? [];
     commands.push({ method: propertyKey, command, ...options });
     Reflect.defineMetadata(META_KEYS.COMMANDS, commands, ctor);
   };

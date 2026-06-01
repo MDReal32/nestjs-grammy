@@ -16,15 +16,20 @@
 import type { Bot, Context as GrammyContext, MiddlewareFn, NextFunction } from "grammy";
 import { isObservable, lastValueFrom } from "rxjs";
 
+import type { ConversationFlavor } from "@grammyjs/conversations";
 import { Injectable, type OnApplicationBootstrap } from "@nestjs/common";
 import { DiscoveryService } from "@nestjs/core";
 
-import { META_KEYS } from "../decorators";
+import { META_KEYS } from "../decorators/meta-keys";
 import { type BotEntry, TelegramBotsRegistry } from "../registry";
 import type { CommandMeta, ConversationMeta, HearsMeta, KeyboardCallbackMeta, OnMeta } from "../types";
 
-type PendingConversation = { fn: Function; name: string; botName: string };
+type DecoratedProvider = ReturnType<DiscoveryService["getProviders"]>[number];
+type HandlerMethod = (this: object, ctx: GrammyContext, next: NextFunction) => unknown;
+type MetadataTarget = object & { readonly name?: string };
+type PendingConversation = { fn: (...args: unknown[]) => unknown; name: string; botName: string };
 type CommandEntry = { command: string; description: string };
+type ConversationBot = Bot<ConversationFlavor<GrammyContext>>;
 
 /**
  * Compose a stack of grammY middlewares into a single middleware function.
@@ -39,10 +44,14 @@ const compose = <C extends GrammyContext>(middlewares: readonly MiddlewareFn<C>[
   return async (ctx: C, next: NextFunction) => {
     let i = -1;
     const run = async (idx: number) => {
-      if (idx <= i) throw new Error("next() called multiple times");
+      if (idx <= i) {
+        throw new Error("next() called multiple times");
+      }
       i = idx;
       const fn = stack[idx] ?? next;
-      if (!fn) return;
+      if (!fn) {
+        return;
+      }
       await fn(ctx, () => run(idx + 1));
     };
     await run(0);
@@ -78,7 +87,10 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
     const providers = this.getEligibleProviders();
     const botNames = this.registry.names();
 
-    if (botNames.length === 0) return;
+    if (botNames.length === 0) {
+      return;
+    }
+
     const scopeResolver = this.createScopeResolver(botNames);
     await this.bindConversations(providers, scopeResolver);
     const commandsByBot = this.bindHandlers(providers, scopeResolver);
@@ -92,7 +104,7 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
   }
 
   private createScopeResolver(allNames: string[]) {
-    return (ctor: Function) => {
+    return (ctor: MetadataTarget) => {
       let scopes = (Reflect.getMetadata(META_KEYS.SCOPES, ctor) as string[] | undefined) ?? [];
 
       if (scopes.length === 0 && allNames.length === 1) {
@@ -107,18 +119,17 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
     };
   }
 
-  private async bindConversations(
-    providers: ReturnType<DiscoveryService["getProviders"]>,
-    resolveScopes: (ctor: Function) => string[]
-  ) {
+  private async bindConversations(providers: DecoratedProvider[], resolveScopes: (ctor: MetadataTarget) => string[]) {
     const botsNeedingConversations = new Set<string>();
     const pendingConversations: PendingConversation[] = [];
 
     for (const wrapper of providers) {
-      const ctor = wrapper.metatype as Function;
+      const ctor = wrapper.metatype as MetadataTarget;
       const convDefs = (Reflect.getMetadata(META_KEYS.CONVERSATIONS, ctor) as ConversationMeta[] | undefined) ?? [];
 
-      if (convDefs.length === 0) continue;
+      if (convDefs.length === 0) {
+        continue;
+      }
 
       for (const botName of resolveScopes(ctor)) {
         botsNeedingConversations.add(botName);
@@ -149,31 +160,41 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
     }
 
     for (const botName of botsNeedingConversations) {
-      const entry = this.registry.get(botName) as BotEntry | undefined;
-      if (!entry) continue;
+      const bot = this.getConversationBot(botName);
+      if (!bot) {
+        continue;
+      }
 
-      (entry.bot as Bot<any>).use(convMod.conversations());
+      bot.use(convMod.conversations());
     }
 
     for (const { fn, name, botName } of pendingConversations) {
-      const entry = this.registry.get(botName) as BotEntry | undefined;
-      if (!entry) continue;
+      const bot = this.getConversationBot(botName);
+      if (!bot) {
+        continue;
+      }
 
-      if (!this.registry.guardBinding(`conv:${name}:${botName}`)) continue;
+      if (!this.registry.guardBinding(`conv:${name}:${botName}`)) {
+        continue;
+      }
 
-      (entry.bot as Bot<any>).use(convMod.createConversation(fn as any, name));
+      const conversation = fn as Parameters<typeof convMod.createConversation>[0];
+      bot.use(convMod.createConversation(conversation, name));
     }
   }
 
-  private bindHandlers(
-    providers: ReturnType<DiscoveryService["getProviders"]>,
-    resolveScopes: (ctor: Function) => string[]
-  ) {
+  private getConversationBot(botName: string) {
+    const entry = this.registry.get(botName) as BotEntry | undefined;
+
+    return entry?.bot as ConversationBot | undefined;
+  }
+
+  private bindHandlers(providers: DecoratedProvider[], resolveScopes: (ctor: MetadataTarget) => string[]) {
     const commandsByBot: Record<string, CommandEntry[]> = {};
 
     for (const wrapper of providers) {
       const instance = wrapper.instance as object;
-      const ctor = wrapper.metatype as Function;
+      const ctor = wrapper.metatype as MetadataTarget;
       const scopes = resolveScopes(ctor);
       const bindings = this.getClassBindings(ctor);
 
@@ -237,7 +258,7 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
     return commandsByBot;
   }
 
-  private createHandler(instance: object, method: Function): MiddlewareFn {
+  private createHandler(instance: object, method: HandlerMethod): MiddlewareFn {
     return async (ctx, next) => {
       const result = method.call(instance, ctx, next);
       await this.executeHandlerResult(result);
@@ -253,7 +274,7 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
     await result;
   }
 
-  private getClassBindings(ctor: Function) {
+  private getClassBindings(ctor: MetadataTarget) {
     return {
       classMiddlewares: (Reflect.getMetadata(META_KEYS.CLASS_USE, ctor) as MiddlewareFn[] | undefined) ?? [],
       commands: (Reflect.getMetadata(META_KEYS.COMMANDS, ctor) as CommandMeta[] | undefined) ?? [],
@@ -303,15 +324,15 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
     }
 
     for (const hear of methodBindings.hears) {
-      bot.hears(hear.trigger as any, composed);
+      bot.hears(hear.trigger, composed);
     }
 
     for (const on of methodBindings.ons) {
-      bot.on(on.filter as any, composed);
+      bot.on(on.filter, composed);
     }
 
     for (const callback of methodBindings.keyboardCallbacks) {
-      bot.callbackQuery(callback.callback as any, composed);
+      bot.callbackQuery(callback.callback, composed);
     }
   }
 

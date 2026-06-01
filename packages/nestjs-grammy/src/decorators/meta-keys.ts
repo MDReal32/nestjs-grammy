@@ -42,6 +42,6 @@ export const META_KEYS = {
   /** Registered `@Conversation` handlers (requires `@grammyjs/conversations`). */
   CONVERSATIONS: Symbol("tg:conversations"),
 
-  /** Registered `@KeyboardCallback` handlers (requires `@grammyjs/keyboards`). */
+  /** Registered `@KeyboardCallback` handlers. */
   KEYBOARD_CALLBACKS: Symbol("tg:keyboard_callbacks")
 } as const;
