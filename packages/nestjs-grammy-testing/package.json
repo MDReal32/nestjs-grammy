@@ -1,0 +1,67 @@
+{
+  "name": "@mdreal/nestjs-grammy-testing",
+  "version": "0.0.1",
+  "description": "Testing utilities for NestJS applications built with @mdreal/nestjs-grammy.",
+  "keywords": [
+    "nestjs",
+    "telegram",
+    "grammy",
+    "testing",
+    "bot"
+  ],
+  "homepage": "https://github.com/MDReal32/nestjs-grammy#readme",
+  "bugs": {
+    "url": "https://github.com/MDReal32/nestjs-grammy/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MDReal32/nestjs-grammy.git",
+    "directory": "packages/nestjs-grammy-testing"
+  },
+  "license": "Apache-2.0",
+  "author": "MDReal",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./build/nestjs-grammy-testing.d.ts",
+      "import": "./build/nestjs-grammy-testing.js",
+      "require": "./build/nestjs-grammy-testing.cjs"
+    }
+  },
+  "main": "./build/nestjs-grammy-testing.js",
+  "types": "./build/nestjs-grammy-testing.d.ts",
+  "files": [
+    "build",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "lint": "prettier --check \"src/**/*.ts\" \"*.{cjs,json,md,ts}\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@swc/helpers": "^0.5.19"
+  },
+  "devDependencies": {
+    "@mdreal/nestjs-grammy": "workspace:^",
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/core": "^11.1.24",
+    "@nestjs/testing": "^11.0.1",
+    "@types/node": "^24.10.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "unplugin-swc": "^1.5.9",
+    "vite": "^8.0.15",
+    "vite-plugin-dts": "^4.5.4"
+  },
+  "peerDependencies": {
+    "@mdreal/nestjs-grammy": "^0.0.18",
+    "@nestjs/testing": "^10 || ^11"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

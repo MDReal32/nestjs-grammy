@@ -1,0 +1,47 @@
+import type { SentMessageMatchingOptions } from "./sent-message-matching-options";
+import type { TextMatcher } from "./text-matcher";
+
+export interface GrammyMatcherAssertions<R> {
+  toHaveHandledUpdate(): R;
+  toHaveHandledCommand(command: string): R;
+  toHaveHandledMessage(text?: TextMatcher): R;
+  toHaveHandledCallbackQuery(data?: string): R;
+  toHaveHandledEvent(eventType: string): R;
+  toHaveEvent(eventType: string): R;
+  toHaveEventCount(eventType: string, count: number): R;
+  toHaveSentMessage(): R;
+  toHaveSentMessageWithText(text: TextMatcher): R;
+  toHaveSentMessageToChat(chatId: number | string): R;
+  toHaveSentMessageMatching(options: SentMessageMatchingOptions): R;
+  toHaveSentMessagesCount(count: number): R;
+  toHaveReplied(): R;
+  toHaveRepliedWithText(text: TextMatcher): R;
+  toHaveRepliedToMessage(messageId: number): R;
+  toHaveEditedMessage(): R;
+  toHaveEditedMessageText(text: TextMatcher): R;
+  toHaveEditedMessageReplyMarkup(): R;
+  toHaveEditedMessageCaption(caption: TextMatcher): R;
+  toHaveAnsweredCallbackQuery(): R;
+  toHaveAnsweredCallbackQueryWithText(text: TextMatcher): R;
+  toHaveAnsweredCallbackQueryWithAlert(): R;
+  toHaveAnsweredCallbackQueryWithoutAlert(): R;
+  toHaveSentInlineKeyboard(): R;
+  toHaveSentReplyKeyboard(): R;
+  toHaveRemovedKeyboard(): R;
+  toHaveSentButtonWithText(text: TextMatcher): R;
+  toHaveSentButtonWithCallbackData(data: TextMatcher): R;
+  toHaveSentPhoto(): R;
+  toHaveSentPhotoWithCaption(caption: TextMatcher): R;
+  toHaveSentDocument(): R;
+  toHaveSentVideo(): R;
+  toHaveSentAudio(): R;
+  toHaveSentVoice(): R;
+  toHaveSentMediaGroup(): R;
+  toHaveSentChatAction(action: string): R;
+  toHaveSentTypingAction(): R;
+  toHaveDeletedMessage(): R;
+  toHavePinnedMessage(): R;
+  toHaveUnpinnedMessage(): R;
+  toHaveCalledTelegramApi(method: string): R;
+  toHaveCalledTelegramApiWith(method: string, matcher: Record<string, unknown>): R;
+}
