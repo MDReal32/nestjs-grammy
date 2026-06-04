@@ -2,18 +2,35 @@
   "name": "@mdreal/monorepo",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "packages/*",
+    "samples/*"
+  ],
   "scripts": {
-    "build": "pnpm --filter @mdreal/nestjs-grammy build",
+    "build": "pnpm --filter './packages/*' build",
     "format": "prettier --write .",
     "lint": "prettier --check .",
-    "typecheck": "pnpm --filter @mdreal/nestjs-grammy typecheck"
+    "test": "pnpm --filter './packages/*' test",
+    "typecheck": "pnpm --filter './packages/*' typecheck"
+  },
+  "dependencies": {
+    "eslint": "^10.4.1",
+    "typescript-eslint": "^8.60.0"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-    "prettier": "^3.6.2",
-    "prettier-plugin-packagejson": "^2.5.19"
+    "@nx/eslint": "22.7.5",
+    "@nx/vite": "22.7.5",
+    "@nx/web": "22.7.5",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "@vitest/ui": "~4.1.7",
+    "jiti": "2.7.0",
+    "nx": "22.7.5",
+    "prettier": "^3.8.3",
+    "prettier-plugin-packagejson": "^3.0.2",
+    "vite": "^8.0.15",
+    "vitest": "~4.1.7"
   },
-  "packageManager": "pnpm@9.15.3+sha512.1f79bc245a66eb0b07c5d4d83131240774642caaa86ef7d0434ab47c0d16f66b04e21e0c086eb61e62c77efc4d7f7ec071afad3796af64892fae66509173893a",
+  "packageManager": "yarn@4.15.0",
   "engines": {
     "node": ">=22"
   }
