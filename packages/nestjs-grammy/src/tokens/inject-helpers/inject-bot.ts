@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Inject } from "@nestjs/common";
 
-import type { CommandOptions } from "../../types/command-options";
-import { Command } from "../command";
+import { TG_BOT } from "../bot-tokens";
 
 /**
- * `Start`
+ * `InjectBot`
  *
- * Registers a handler for the `/start` command.
- * @param options - Optional configuration for the operation.
- * @returns Returns the computed result.
+ * Builds the NestJS injection decorator returned by `InjectBot`.
+ * @param name - The target name.
+ * @returns Returns the generated NestJS token helper.
  */
-export const Start = (options?: CommandOptions) => Command("start", options);
+export const InjectBot = (name: string) => Inject(TG_BOT(name));

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import type { CommandOptions } from "../../types/command-options";
-import { Command } from "../command";
+import { makeToken } from "../make-token";
 
 /**
- * `Start`
+ * `TG_BOT`
  *
- * Registers a handler for the `/start` command.
- * @param options - Optional configuration for the operation.
- * @returns Returns the computed result.
+ * Builds the `TG_BOT` injection token.
+ * @param name - The target name.
+ * @returns Returns the generated NestJS token helper.
  */
-export const Start = (options?: CommandOptions) => Command("start", options);
+export const TG_BOT = (name: string) => makeToken(`TG_BOT:${name}`);

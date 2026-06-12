@@ -22,8 +22,7 @@ import { TelegramDecoratorsBinder } from "../binder";
 import { type BotEntry, TelegramBotsRegistry } from "../registry";
 import { TelegramBotRunner } from "../runtime";
 import { TG_API, TG_BOT, TG_OPTIONS, TG_WEBHOOK_CALLBACK, makeToken } from "../tokens";
-import type { BotInstanceOptions, TelegramModuleAsyncOptions } from "../types";
-import type { InjectInstances } from "../types/inject-instances";
+import type { BotInstanceOptions, InjectInstances, TelegramModuleAsyncOptions } from "../types";
 import { RegistryModule } from "./registry.module";
 
 /**

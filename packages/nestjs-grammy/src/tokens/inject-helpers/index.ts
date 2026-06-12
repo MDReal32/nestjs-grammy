@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-import type { CommandOptions } from "../../types/command-options";
-import { Command } from "../command";
-
-/**
- * `Start`
- *
- * Registers a handler for the `/start` command.
- * @param options - Optional configuration for the operation.
- * @returns Returns the computed result.
- */
-export const Start = (options?: CommandOptions) => Command("start", options);
+export * from "./inject-api";
+export * from "./inject-bot";
+export * from "./inject-options";
+export * from "./inject-webhook";

@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-import type { CommandOptions } from "../../types/command-options";
-import { Command } from "../command";
-
 /**
- * `Start`
- *
- * Registers a handler for the `/start` command.
- * @param options - Optional configuration for the operation.
- * @returns Returns the computed result.
+ * A branded string type used as a NestJS injection token
+ * within the `TelegramModule`.
  */
-export const Start = (options?: CommandOptions) => Command("start", options);
+export type Token = string & { readonly __brand: "TelegramModuleToken" };

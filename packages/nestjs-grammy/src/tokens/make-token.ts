@@ -14,27 +14,13 @@
  * limitations under the License.
  */
 
-/**
- * A branded string type used as a NestJS injection token
- * within the `TelegramModule`.
- *
- * Prevents accidental mixing of plain strings with tokens
- * in the type system.
- */
-export type Token = string & { readonly __brand: "TelegramModuleToken" };
+import type { Token } from "./token-type";
 
 /**
- * Create a branded token from a string.
+ * `makeToken`
  *
- * Typically used internally to generate unique NestJS
- * provider tokens for each bot instance.
- *
- * @example
- * ```ts
- * const TG_BOT = (name: string) => makeToken(`TG_BOT:${name}`);
- * ```
- *
- * @param s - The base string value.
- * @returns A branded `Token` usable as a NestJS provider key.
+ * Builds the Token value.
+ * @param s - The source string value.
+ * @returns Returns the constructed value.
  */
 export const makeToken = (s: string) => s as Token;
