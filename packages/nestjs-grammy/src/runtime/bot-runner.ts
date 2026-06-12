@@ -21,7 +21,8 @@ import { makeLogger } from "../logging/logger";
 import { makeRateLimit } from "../rate-limit/make-rate-limit";
 import type { BotEntry, HttpWebhookCallback, TelegramBotsRegistry } from "../registry";
 import type { BotInstanceOptions } from "../types";
-import { type RunnerMode, resolveMode } from "./resolve-mode";
+import { resolveMode } from "./resolve-mode";
+import type { RunnerMode } from "./runner-mode";
 
 /**
  * `TelegramBotRunner`
