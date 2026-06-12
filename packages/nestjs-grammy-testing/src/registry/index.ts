@@ -1,1 +1,1 @@
-export { GrammyTestingRegistry } from "./testing-registry";
+export * from "./testing-registry";

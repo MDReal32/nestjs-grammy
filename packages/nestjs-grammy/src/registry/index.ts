@@ -1,3 +1,3 @@
-export * from "./bot-entry";
+export type * from "./bot-entry";
 export * from "./bot-registry";
-export * from "./http-webhook-callback";
+export type * from "./http-webhook-callback";

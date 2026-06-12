@@ -1,13 +1,16 @@
 import "reflect-metadata";
 
 // Core module
-export { TelegramModule } from "./module/telegram.module";
+export * from "./module";
 
 // Handler decorators
 export * from "./decorators";
 
 // Injection decorators
-export { InjectBot, InjectApi, InjectWebhook, InjectOptions } from "./tokens";
+export * from "./tokens";
+
+// Injection tokens
+export * from "./tokens";
 
 // Public types
-export type { BotInstanceOptions, TelegramMiddleware, TelegramModuleAsyncOptions, WebhookOptions } from "./types";
+export type * from "./types";

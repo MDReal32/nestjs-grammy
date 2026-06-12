@@ -1,1 +1,1 @@
-export { GrammyTestingModule } from "./testing-module";
+export * from "./testing-module";

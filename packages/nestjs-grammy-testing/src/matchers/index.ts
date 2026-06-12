@@ -1,2 +1,2 @@
-export { grammyMatchers } from "./grammy-matchers";
-export { registerGrammyMatchers } from "./register-grammy-matchers";
+export * from "./grammy-matchers";
+export * from "./register-grammy-matchers";
