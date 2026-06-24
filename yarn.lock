@@ -2421,6 +2421,7 @@ __metadata:
     "@types/node": "npm:^24.10.1"
     reflect-metadata: "npm:^0.2.2"
     rxjs: "npm:^7.8.2"
+    typescript: "npm:^5.8.3"
     unplugin-swc: "npm:^1.5.9"
     vite: "npm:^8.0.15"
     vite-plugin-dts: "npm:^4.5.4"

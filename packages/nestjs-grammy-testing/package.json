@@ -37,6 +37,7 @@
   "scripts": {
     "build": "vite build",
     "lint": "prettier --check \"src/**/*.ts\" \"*.{cjs,json,md,ts}\"",
+    "prepack": "vite build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -50,6 +51,7 @@
     "@types/node": "^24.10.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
+    "typescript": "^5.8.3",
     "unplugin-swc": "^1.5.9",
     "vite": "^8.0.15",
     "vite-plugin-dts": "^4.5.4"

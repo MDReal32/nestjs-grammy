@@ -7,11 +7,11 @@
     "samples/*"
   ],
   "scripts": {
-    "build": "pnpm --filter './packages/*' build",
+    "build": "nx run-many -t build",
     "format": "prettier --write .",
     "lint": "prettier --check .",
-    "test": "pnpm --filter './packages/*' test",
-    "typecheck": "pnpm --filter './packages/*' typecheck"
+    "test": "nx run-many -t test",
+    "typecheck": "nx run-many -t typecheck"
   },
   "dependencies": {
     "eslint": "^10.4.1",

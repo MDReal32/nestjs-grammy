@@ -37,6 +37,7 @@
   "scripts": {
     "build": "vite build",
     "lint": "prettier --check .",
+    "prepack": "vite build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
