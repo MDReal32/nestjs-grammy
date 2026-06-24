@@ -1,10 +1,39 @@
+/*
+ * Copyright 2025 MDReal
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import type { MockApiCall } from "../mock-api";
 import type { GrammyBotTester } from "../tester";
 import type { MatcherFunction, MatcherResult, SentMessageMatchingOptions, TextMatcher } from "../types";
 
+/**
+ * `isTester`
+ *
+ * Determines whether tester matches the expected shape.
+ * @param received - The received value under evaluation.
+ * @returns Returns `true` when the condition matches; otherwise, `false`.
+ */
 const isTester = (received: unknown): received is GrammyBotTester =>
   typeof received === "object" && received !== null && "api" in received && "sendUpdate" in received;
 
+/**
+ * `asTester`
+ *
+ * Normalizes the value as tester.
+ * @param received - The received value under evaluation.
+ * @returns Returns the computed result.
+ */
 const asTester = (received: unknown) => {
   if (!isTester(received)) {
     throw new Error("Expected a GrammyBotTester instance");
@@ -13,6 +42,13 @@ const asTester = (received: unknown) => {
   return received;
 };
 
+/**
+ * `payloadOf`
+ *
+ * Implements the payload of helper.
+ * @param call - The recorded API call.
+ * @returns Returns the computed result.
+ */
 const payloadOf = (call: MockApiCall) => {
   if (typeof call.payload === "object" && call.payload !== null) {
     return call.payload as Record<string, unknown>;
@@ -21,6 +57,14 @@ const payloadOf = (call: MockApiCall) => {
   return {};
 };
 
+/**
+ * `textMatches`
+ *
+ * Determines whether the actual text matches the expected matcher.
+ * @param actual - The actual value being evaluated.
+ * @param expected - The expected value to compare against.
+ * @returns Returns `true` when the condition matches; otherwise, `false`.
+ */
 const textMatches = (actual: unknown, expected: TextMatcher) => {
   if (typeof actual !== "string") {
     return false;
@@ -33,6 +77,14 @@ const textMatches = (actual: unknown, expected: TextMatcher) => {
   return expected.test(actual);
 };
 
+/**
+ * `matchesPartial`
+ *
+ * Determines whether the provided values match.
+ * @param actual - The actual value being evaluated.
+ * @param expected - The expected value to compare against.
+ * @returns Returns `true` when the condition matches; otherwise, `false`.
+ */
 const matchesPartial = (actual: unknown, expected: Record<string, unknown>): boolean => {
   if (typeof actual !== "object" || actual === null) {
     return false;
@@ -53,18 +105,58 @@ const matchesPartial = (actual: unknown, expected: Record<string, unknown>): boo
   });
 };
 
+/**
+ * `matcherResult`
+ *
+ * Builds a matcher result object for the current assertion.
+ * @param pass - Whether the matcher should pass.
+ * @param positive - The positive assertion message.
+ * @param negative - The negative assertion message.
+ * @returns Returns the computed result.
+ */
 const matcherResult = (pass: boolean, positive: string, negative = positive): MatcherResult => ({
   pass,
   message: () => (pass ? negative : positive)
 });
 
+/**
+ * `callsFor`
+ *
+ * Implements the calls for helper.
+ * @param tester - The tester instance.
+ * @param method - The Telegram API method name.
+ * @returns Returns the computed result.
+ */
 const callsFor = (tester: GrammyBotTester, method: string) => tester.api.callsFor(method);
 
+/**
+ * `hasCall`
+ *
+ * Determines whether call is available.
+ * @param tester - The tester instance.
+ * @param method - The Telegram API method name.
+ * @param predicate - Predicate used to validate the current value.
+ * @returns Returns `true` when the condition matches; otherwise, `false`.
+ */
 const hasCall = (tester: GrammyBotTester, method: string, predicate: (payload: Record<string, unknown>) => boolean) =>
   callsFor(tester, method).some(call => predicate(payloadOf(call)));
 
+/**
+ * `sentMessageCalls`
+ *
+ * Collects the recorded sent-message calls.
+ * @param tester - The tester instance.
+ * @returns Returns the computed result.
+ */
 const sentMessageCalls = (tester: GrammyBotTester) => callsFor(tester, "sendMessage");
 
+/**
+ * `hasEditedMessageCall`
+ *
+ * Determines whether edited message call is available.
+ * @param tester - The tester instance.
+ * @returns Returns `true` when the condition matches; otherwise, `false`.
+ */
 const hasEditedMessageCall = (tester: GrammyBotTester) =>
   [
     "editMessageText",
@@ -74,11 +166,27 @@ const hasEditedMessageCall = (tester: GrammyBotTester) =>
     "editMessageLiveLocation"
   ].some(method => callsFor(tester, method).length > 0);
 
+/**
+ * `hasEditedMessagePayload`
+ *
+ * Determines whether edited message payload is available.
+ * @param tester - The tester instance.
+ * @param predicate - Predicate used to validate the current value.
+ * @returns Returns `true` when the condition matches; otherwise, `false`.
+ */
 const hasEditedMessagePayload = (tester: GrammyBotTester, predicate: (payload: Record<string, unknown>) => boolean) =>
   ["editMessageText", "editMessageCaption", "editMessageMedia", "editMessageReplyMarkup"].some(method =>
     hasCall(tester, method, predicate)
   );
 
+/**
+ * `sentMessageMatches`
+ *
+ * Determines whether a sent message matches the provided expectations.
+ * @param tester - The tester instance.
+ * @param options - Optional configuration for the operation.
+ * @returns Returns `true` when the condition matches; otherwise, `false`.
+ */
 const sentMessageMatches = (tester: GrammyBotTester, options: SentMessageMatchingOptions) =>
   sentMessageCalls(tester).some(call => {
     const payload = payloadOf(call);
@@ -102,6 +210,15 @@ const sentMessageMatches = (tester: GrammyBotTester, options: SentMessageMatchin
     return true;
   });
 
+/**
+ * `buttonMatches`
+ *
+ * Determines whether the button field matches the expected value.
+ * @param value - The current value.
+ * @param matcher - The matcher value.
+ * @param field - The button field to compare.
+ * @returns Returns `true` when the condition matches; otherwise, `false`.
+ */
 const buttonMatches = (value: unknown, matcher: TextMatcher, field: "text" | "callback_data"): boolean => {
   if (Array.isArray(value)) {
     return value.some(item => buttonMatches(item, matcher, field));
@@ -120,6 +237,14 @@ const buttonMatches = (value: unknown, matcher: TextMatcher, field: "text" | "ca
   return Object.values(source).some(item => buttonMatches(item, matcher, field));
 };
 
+/**
+ * `hasReplyMarkup`
+ *
+ * Determines whether reply markup is available.
+ * @param tester - The tester instance.
+ * @param predicate - Predicate used to validate the current value.
+ * @returns Returns `true` when the condition matches; otherwise, `false`.
+ */
 const hasReplyMarkup = (tester: GrammyBotTester, predicate: (markup: Record<string, unknown>) => boolean) =>
   tester.api.calls.some(call => {
     const markup = payloadOf(call).reply_markup;

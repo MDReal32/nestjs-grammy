@@ -1,3 +1,18 @@
+/*
+ * Copyright 2025 MDReal
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import type { Bot, Context as GrammyContext } from "grammy";
 
 import { TG_BOT, TelegramModule } from "@mdreal/nestjs-grammy";
@@ -18,6 +33,13 @@ interface NormalizedBotOptions<TContext extends GrammyContext = GrammyContext> e
   readonly options: NonNullable<GrammyTestingBotOptions<TContext>["options"]>;
 }
 
+/**
+ * `normalizeBots`
+ *
+ * Implements the normalize bots helper.
+ * @param options - Optional configuration for the operation.
+ * @returns Returns the computed result.
+ */
 const normalizeBots = <TContext extends GrammyContext>(
   options: GrammyTestingModuleOptions<TContext>
 ): NormalizedBotOptions<TContext>[] => {
@@ -40,6 +62,11 @@ const normalizeBots = <TContext extends GrammyContext>(
   }));
 };
 
+/**
+ * `GrammyTestingModule`
+ *
+ * Provides the `GrammyTestingModule` NestJS module.
+ */
 @Module({})
 export class GrammyTestingModule {
   static forRoot<TContext extends GrammyContext = GrammyContext>(
