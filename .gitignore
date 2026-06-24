@@ -230,3 +230,6 @@ vite.config.*.timestamp*
 vitest.config.*.timestamp*
 
 build
+.nx/polygraph
+.claude/worktrees
+.claude/settings.local.json
