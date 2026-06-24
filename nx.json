@@ -2,12 +2,8 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "targetDefaults": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "{projectRoot}/build"
-      ],
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/build"],
       "cache": true
     }
   },
@@ -35,5 +31,16 @@
       }
     }
   ],
+  "release": {
+    "projects": ["packages/*"],
+    "projectsRelationship": "independent",
+    "releaseTagPattern": "{projectName}@{version}",
+    "version": {
+      "conventionalCommits": true
+    },
+    "changelog": {
+      "projectChangelogs": true
+    }
+  },
   "neverConnectToCloud": true
 }

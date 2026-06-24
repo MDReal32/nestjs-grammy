@@ -49,6 +49,7 @@
     "@nestjs/core": "^11.1.24",
     "@nestjs/testing": "^11.0.1",
     "@types/node": "^24.10.1",
+    "prettier": "^3.6.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "typescript": "^5.8.3",
@@ -57,7 +58,7 @@
     "vite-plugin-dts": "^4.5.4"
   },
   "peerDependencies": {
-    "@mdreal/nestjs-grammy": "^0.0.18",
+    "@mdreal/nestjs-grammy": ">=0.0.18 <1.0.0",
     "@nestjs/testing": "^10 || ^11"
   },
   "engines": {
