@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import type { Class } from "./class";
 
 export type InjectInstances<TInject extends readonly Class[]> = {

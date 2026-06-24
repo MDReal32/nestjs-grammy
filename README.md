@@ -12,35 +12,35 @@ This package provides a clean, modular approach to integrating grammY bots into 
 
 ## ✨ Highlights
 
-* **Dynamic NestJS Module**
+- **Dynamic NestJS Module**
   Easily register one or multiple Telegram bots with `TelegramModule.forRoot()` / `forRootAsync()`.
 
-* **Multiple Bots in One App**
+- **Multiple Bots in One App**
   Run any number of bots in a single NestJS instance. Each bot has a unique name and isolated scope.
 
-* **Decorator-based API**
+- **Decorator-based API**
   Write expressive and concise handlers with decorators:
 
-  * `@Command("...", { description, isHidden })`, `@Hears("...")`, `@On("...")`, `@Use()`
-  * Shorthands: `@Start()`, `@Help()` — accept the same `CommandOptions`
-  * `@Conversation("name")` for conversational flows (requires `@grammyjs/conversations`)
-  * Commands are auto-registered via `bot.api.setMyCommands()` at bootstrap
+  - `@Command("...", { description, isHidden })`, `@Hears("...")`, `@On("...")`, `@Use()`
+  - Shorthands: `@Start()`, `@Help()` — accept the same `CommandOptions`
+  - `@Conversation("name")` for conversational flows (requires `@grammyjs/conversations`)
+  - Commands are auto-registered via `bot.api.setMyCommands()` at bootstrap
 
-* **Scoped Handlers**
+- **Scoped Handlers**
   `@Scope("botName")` / `@Scopes([...])` let you control which bot executes which handler.
 
-* **Elegant Dependency Injection**
+- **Elegant Dependency Injection**
   Inject instances directly into services:
 
-  * `@InjectBot("name")`
-  * `@InjectApi("name")`
-  * `@InjectWebhook("name")`
-  * `@InjectOptions("name")`
+  - `@InjectBot("name")`
+  - `@InjectApi("name")`
+  - `@InjectWebhook("name")`
+  - `@InjectOptions("name")`
 
-* **Nest-style Integration**
+- **Nest-style Integration**
   Uses Nest’s `DiscoveryService` to auto-wire handlers at bootstrap. No manual plumbing required.
 
-* **Flexible Runtime**
+- **Flexible Runtime**
   Choose between **polling** or **webhook** mode per bot. Supports grammY plugins, middlewares, logging, and rate limiting.
 
 ---
@@ -60,18 +60,18 @@ pnpm add @nestjs/common @nestjs/core reflect-metadata
 ### Single Bot Setup
 
 ```ts
-import { Module } from "@nestjs/common";
 import { TelegramModule } from "@mdreal/nestjs-grammy";
+import { Module } from "@nestjs/common";
 
 @Module({
   imports: [
     TelegramModule.forRoot({
       name: "mybot",
       token: process.env.TELEGRAM_TOKEN!,
-      mode: "auto",   // "auto" | "polling" | "webhook"
-      logging: true,  // use NestJS logger
-    }),
-  ],
+      mode: "auto", // "auto" | "polling" | "webhook"
+      logging: true // use NestJS logger
+    })
+  ]
 })
 export class AppModule {}
 ```
@@ -79,9 +79,10 @@ export class AppModule {}
 ### Basic Handler
 
 ```ts
-import { Injectable } from "@nestjs/common";
-import { Command, Start, Help } from "@mdreal/nestjs-grammy";
 import type { Context } from "grammy";
+
+import { Command, Help, Start } from "@mdreal/nestjs-grammy";
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class BotHandlers {
@@ -109,17 +110,18 @@ export class BotHandlers {
 ## 🤖 Multiple Bots Example
 
 ```ts
+import type { Context } from "grammy";
+
+import { Command, Scope } from "@mdreal/nestjs-grammy";
+import { Injectable } from "@nestjs/common";
+
 @Module({
   imports: [
     TelegramModule.forRoot({ name: "alpha", token: process.env.TG_ALPHA! }),
-    TelegramModule.forRoot({ name: "beta", token: process.env.TG_BETA! }),
-  ],
+    TelegramModule.forRoot({ name: "beta", token: process.env.TG_BETA! })
+  ]
 })
 export class AppModule {}
-
-import { Injectable } from "@nestjs/common";
-import { Scope, Command } from "@mdreal/nestjs-grammy";
-import type { Context } from "grammy";
 
 @Injectable()
 @Scope("beta") // binds only to the "beta" bot
@@ -144,10 +146,11 @@ pnpm add @grammyjs/conversations
 Mark any method with `@Conversation()` and the binder will automatically install the `conversations()` middleware and register the handler with `createConversation()` at bootstrap.
 
 ```ts
-import { Injectable } from "@nestjs/common";
-import { Start, Conversation } from "@mdreal/nestjs-grammy";
-import type { Conversation as Conv, ConversationFlavor } from "@grammyjs/conversations";
 import type { Context } from "grammy";
+
+import type { Conversation as Conv, ConversationFlavor } from "@grammyjs/conversations";
+import { Conversation, Start } from "@mdreal/nestjs-grammy";
+import { Injectable } from "@nestjs/common";
 
 type MyContext = ConversationFlavor<Context>;
 
@@ -175,15 +178,16 @@ export class BotHandlers {
 ## 💉 Dependency Injection
 
 ```ts
+import type { Api, Bot } from "grammy";
+
+import { InjectApi, InjectBot } from "@mdreal/nestjs-grammy";
 import { Injectable } from "@nestjs/common";
-import { InjectBot, InjectApi } from "@mdreal/nestjs-grammy";
-import type { Bot, Api } from "grammy";
 
 @Injectable()
 export class BotService {
   constructor(
     @InjectBot("mybot") private readonly bot: Bot,
-    @InjectApi("mybot") private readonly api: Api,
+    @InjectApi("mybot") private readonly api: Api
   ) {}
 
   async notify(chatId: number, message: string) {
@@ -201,14 +205,14 @@ TelegramModule.forRoot({
   name: "mybot",
   token: "...",
   mode: "auto" | "polling" | "webhook",
-  apiPlugins: [],      // register grammY API plugins
-  rateLimit: {},       // in-memory rate limiting
-  middlewares: [],     // custom grammY middlewares
-  polling: {},         // PollingOptions
-  webhook: { url: ""}, // WebhookOptions
-  logging: true,       // enable NestJS logger
-  onError: (err) => {}, 
-  onStart: (info) => {},
+  apiPlugins: [], // register grammY API plugins
+  rateLimit: {}, // in-memory rate limiting
+  middlewares: [], // custom grammY middlewares
+  polling: {}, // PollingOptions
+  webhook: { url: "" }, // WebhookOptions
+  logging: true, // enable NestJS logger
+  onError: err => {},
+  onStart: info => {}
 });
 ```
 
@@ -218,37 +222,37 @@ TelegramModule.forRoot({
 
 ### ✅ Implemented
 
-* Core decorators: `@Command`, `@Start`, `@Help`, `@Hears`, `@On`, `@Use` — commands auto-register via `setMyCommands()` using `CommandOptions`
-* Multi-bot support with `@Scope` / `@Scopes`
-* Injection helpers: `@InjectBot`, `@InjectApi`, `@InjectWebhook`, `@InjectOptions`
-* Auto-binding via `DiscoveryService`
-* `@Conversation()` — optional conversational flows via `@grammyjs/conversations`
+- Core decorators: `@Command`, `@Start`, `@Help`, `@Hears`, `@On`, `@Use` — commands auto-register via `setMyCommands()` using `CommandOptions`
+- Multi-bot support with `@Scope` / `@Scopes`
+- Injection helpers: `@InjectBot`, `@InjectApi`, `@InjectWebhook`, `@InjectOptions`
+- Auto-binding via `DiscoveryService`
+- `@Conversation()` — optional conversational flows via `@grammyjs/conversations`
 
 ### 🚧 Planned Built-ins
 
-* `@AdminOnly()` — restricts handlers to configured admin user IDs
-* `@PrivateChat()` / `@GroupChat()` — run handlers only in specific chat types
-* `@Throttle(ms)` — simple per-user throttling for spam control
-* `@Alias("...")` — define multiple triggers for the same command
-* `@Fallback()` — catch-all handler for unrecognized input
-* Auto-generated `/help` command that aggregates available commands
+- `@AdminOnly()` — restricts handlers to configured admin user IDs
+- `@PrivateChat()` / `@GroupChat()` — run handlers only in specific chat types
+- `@Throttle(ms)` — simple per-user throttling for spam control
+- `@Alias("...")` — define multiple triggers for the same command
+- `@Fallback()` — catch-all handler for unrecognized input
+- Auto-generated `/help` command that aggregates available commands
 
 ### 🚫 Won't Implement
 
-* ~~`@InlineQuery()`~~ / ~~`@ChosenInlineResult()`~~ / ~~`@CallbackQuery("...")`~~ — use `@On(...)` or handle inside `@Conversation`
+- ~~`@InlineQuery()`~~ / ~~`@ChosenInlineResult()`~~ / ~~`@CallbackQuery("...")`~~ — use `@On(...)` or handle inside `@Conversation`
 
 ### 🛠 Infrastructure
 
-* CLI generator: `nest g handler` for scaffolded handlers with decorators
-* Graceful shutdown hooks (`bot.stop()` integration with Nest lifecycle)
-* Example starter projects (REST + bot hybrid apps)
+- CLI generator: `nest g handler` for scaffolded handlers with decorators
+- Graceful shutdown hooks (`bot.stop()` integration with Nest lifecycle)
+- Example starter projects (REST + bot hybrid apps)
 
 ---
 
 ## 📖 Documentation & References
 
-* [grammY Documentation](https://grammy.dev/) — for bot API & middleware
-* [NestJS Documentation](https://docs.nestjs.com/) — for framework fundamentals
+- [grammY Documentation](https://grammy.dev/) — for bot API & middleware
+- [NestJS Documentation](https://docs.nestjs.com/) — for framework fundamentals
 
 This library bridges the two worlds: **ergonomics of grammY** inside the **structured environment of NestJS**.
 
