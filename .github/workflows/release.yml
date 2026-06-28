@@ -73,25 +73,44 @@ jobs:
       #
       # Behaviour:
       #   - Manual dispatch with an explicit `specifier` -> release exactly that.
-      #   - Otherwise (every push to master, or manual without a specifier):
-      #     if the current manifest version isn't on npm yet, publish it as-is;
-      #     if it already exists, patch-bump and publish. So every push deploys.
+      #   - Otherwise (push to master): only deploy when a package's `src/` or
+      #     `package.json` changed since the last release tag. ci:/docs:/config
+      #     commits don't publish. When deploying: publish the current version if
+      #     it's new, else patch-bump and publish.
       - name: Release (version, changelog, tag, publish)
         run: |
           set -eo pipefail
+
+          # Manual explicit release.
           spec="${{ inputs.specifier }}"
           if [ -n "$spec" ]; then
             yarn nx release "$spec" ${{ inputs.first-release && '--first-release' || '' }} --yes
-          else
-            name=$(node -p "require('./packages/nestjs-grammy/package.json').name")
-            ver=$(node -p "require('./packages/nestjs-grammy/package.json').version")
-            if npm view "$name@$ver" version >/dev/null 2>&1; then
-              echo "::notice::$name@$ver already on npm — patch bump + publish"
-              yarn nx release patch --yes
-            else
-              echo "::notice::$name@$ver not on npm — publishing current version"
-              yarn nx release publish
+            exit 0
+          fi
+
+          # Auto path: skip unless package source or manifest changed since the
+          # last release. CHANGELOG.md is a release artifact and is ignored.
+          git fetch --tags --quiet origin || true
+          last_tag=$(git tag --list "@mdreal/nestjs-grammy@*" --sort=-v:refname | head -n1)
+          if [ -n "$last_tag" ]; then
+            changed=$(git diff --name-only "$last_tag" HEAD -- packages/ \
+              | grep -E 'packages/[^/]+/(src/|package\.json)' || true)
+            if [ -z "$changed" ]; then
+              echo "::notice::No package src/package.json changes since $last_tag — skipping release"
+              exit 0
             fi
+            echo "Changed since $last_tag:"; echo "$changed"
+          fi
+
+          # Publish current version if new, else patch-bump and publish.
+          name=$(node -p "require('./packages/nestjs-grammy/package.json').name")
+          ver=$(node -p "require('./packages/nestjs-grammy/package.json').version")
+          if npm view "$name@$ver" version >/dev/null 2>&1; then
+            echo "::notice::$name@$ver already on npm — patch bump + publish"
+            yarn nx release patch --yes
+          else
+            echo "::notice::$name@$ver not on npm — publishing current version"
+            yarn nx release publish
           fi
         env:
           NPM_CONFIG_PROVENANCE: "true"
