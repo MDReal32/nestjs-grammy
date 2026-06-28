@@ -2427,7 +2427,7 @@ __metadata:
     vite: "npm:^8.0.15"
     vite-plugin-dts: "npm:^4.5.4"
   peerDependencies:
-    "@mdreal/nestjs-grammy": ">=0.0.18 <1.0.0"
+    "@mdreal/nestjs-grammy": ^1.0.0
     "@nestjs/testing": ^10 || ^11
   languageName: unknown
   linkType: soft
