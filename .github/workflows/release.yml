@@ -1,6 +1,12 @@
 name: Release
 
 on:
+  # Auto-release: fires after the CI workflow finishes on master.
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [master]
+  # Manual release: lets you force a first release or pin an explicit version.
   workflow_dispatch:
     inputs:
       first-release:
@@ -17,12 +23,24 @@ permissions:
   contents: write
   id-token: write
 
+# Never run two releases at once; don't cancel an in-flight publish.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
+    # Manual dispatch always runs. Auto-release runs only when CI succeeded on master
+    # and the triggering commit is NOT nx's own release commit (prevents an infinite loop).
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       !startsWith(github.event.workflow_run.head_commit.message, 'chore(release)'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: master
           # Full history is required for conventional-commit version bumps and changelogs.
           fetch-depth: 0
 
@@ -51,3 +69,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
+
+      - name: Push release commit and tags
+        run: git push --follow-tags origin master
