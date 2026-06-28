@@ -28,7 +28,8 @@
       "require": "./build/nestjs-grammy-testing.cjs"
     }
   },
-  "main": "./build/nestjs-grammy-testing.js",
+  "main": "./build/nestjs-grammy-testing.cjs",
+  "module": "./build/nestjs-grammy-testing.js",
   "types": "./build/nestjs-grammy-testing.d.ts",
   "files": [
     "build",

@@ -29,7 +29,8 @@
     },
     "./schematics": {}
   },
-  "main": "./build/nestjs-grammy.js",
+  "main": "./build/nestjs-grammy.cjs",
+  "module": "./build/nestjs-grammy.js",
   "types": "./build/nestjs-grammy.d.ts",
   "files": [
     "build"
