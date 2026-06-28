@@ -27,5 +27,5 @@
       "@mdreal/nestjs-grammy": ["src/main.ts"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "vite.config.ts"]
 }

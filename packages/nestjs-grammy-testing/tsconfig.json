@@ -20,5 +20,5 @@
       "@mdreal/nestjs-grammy-testing": ["src/main.ts"]
     }
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests", "vite.config.ts"]
 }
