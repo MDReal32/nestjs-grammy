@@ -2413,7 +2413,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mdreal/nestjs-grammy-testing@workspace:packages/nestjs-grammy-testing"
   dependencies:
-    "@mdreal/nestjs-grammy": "workspace:^"
     "@nestjs/common": "npm:^11.0.1"
     "@nestjs/core": "npm:^11.1.24"
     "@nestjs/testing": "npm:^11.0.1"
