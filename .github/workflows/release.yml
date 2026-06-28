@@ -70,8 +70,29 @@ jobs:
 
       # Auth is via OIDC trusted publishing (no token). Requires a trusted
       # publisher configured for each package on npmjs.com + id-token: write.
+      #
+      # Behaviour:
+      #   - Manual dispatch with an explicit `specifier` -> release exactly that.
+      #   - Otherwise (every push to master, or manual without a specifier):
+      #     if the current manifest version isn't on npm yet, publish it as-is;
+      #     if it already exists, patch-bump and publish. So every push deploys.
       - name: Release (version, changelog, tag, publish)
-        run: yarn nx release ${{ inputs.specifier }} ${{ inputs.first-release && '--first-release' || '' }} --yes
+        run: |
+          set -eo pipefail
+          spec="${{ inputs.specifier }}"
+          if [ -n "$spec" ]; then
+            yarn nx release "$spec" ${{ inputs.first-release && '--first-release' || '' }} --yes
+          else
+            name=$(node -p "require('./packages/nestjs-grammy/package.json').name")
+            ver=$(node -p "require('./packages/nestjs-grammy/package.json').version")
+            if npm view "$name@$ver" version >/dev/null 2>&1; then
+              echo "::notice::$name@$ver already on npm — patch bump + publish"
+              yarn nx release patch --yes
+            else
+              echo "::notice::$name@$ver not on npm — publishing current version"
+              yarn nx release publish
+            fi
+          fi
         env:
           NPM_CONFIG_PROVENANCE: "true"
 
