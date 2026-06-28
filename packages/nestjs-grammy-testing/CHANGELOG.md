@@ -1,3 +1,17 @@
+## 1.1.1 (2026-06-28)
+
+### 🩹 Fixes
+
+- drop workspace: devDependency from testing package so it can publish ([f315472](https://github.com/MDReal32/nestjs-grammy/commit/f315472))
+
+### 🧱 Updated Dependencies
+
+- Updated @mdreal/nestjs-grammy to 1.1.1
+
+### ❤️ Thank You
+
+- MDReal32 @MDReal32
+
 ## 1.1.0 (2026-06-28)
 
 ### 🧱 Updated Dependencies
