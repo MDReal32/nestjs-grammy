@@ -1,6 +1,6 @@
 {
   "name": "@mdreal/nestjs-grammy-testing",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Testing utilities for NestJS applications built with @mdreal/nestjs-grammy.",
   "keywords": [
     "nestjs",
@@ -59,7 +59,7 @@
     "vite-plugin-dts": "^4.5.4"
   },
   "peerDependencies": {
-    "@mdreal/nestjs-grammy": ">=0.0.18 <1.0.0",
+    "@mdreal/nestjs-grammy": "^1.0.0",
     "@nestjs/testing": "^10 || ^11"
   },
   "engines": {

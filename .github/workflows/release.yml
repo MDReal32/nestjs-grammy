@@ -7,6 +7,10 @@ on:
         description: "First release (no prior version tags exist yet)"
         type: boolean
         default: false
+      specifier:
+        description: "Explicit version e.g. 1.0.0 (overrides conventional-commit bump). Leave empty to derive from commits."
+        type: string
+        default: ""
 
 # Needed for: pushing the version commit + tags (contents) and npm provenance (id-token).
 permissions:
@@ -43,7 +47,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Release (version, changelog, tag, publish)
-        run: yarn nx release ${{ inputs.first-release && '--first-release' || '' }} --yes
+        run: yarn nx release ${{ inputs.specifier }} ${{ inputs.first-release && '--first-release' || '' }} --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
