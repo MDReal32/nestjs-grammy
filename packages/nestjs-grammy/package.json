@@ -37,7 +37,7 @@
   ],
   "scripts": {
     "build": "vite build",
-    "lint": "prettier --check \"src/**/*.ts\" \"*.{cjs,json,md,ts}\"",
+    "lint": "prettier --check \"src/**/*.ts\" \"*.{cjs,json,ts}\" \"README.md\"",
     "prepack": "vite build",
     "typecheck": "tsc --noEmit"
   },
