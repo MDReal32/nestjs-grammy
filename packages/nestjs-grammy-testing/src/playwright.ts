@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 /**
- * Jest entry point.
+ * Playwright Test entry point.
  *
- * Import once from a Jest setup file (uses the global `expect`):
+ * Import once from a Playwright setup/fixture file:
  *
  * ```ts
- * // jest.setup.ts
- * import "@mdreal/nestjs-grammy-testing/jest";
+ * import "@mdreal/nestjs-grammy-testing/playwright";
  * ```
  */
 import "reflect-metadata";
 
+import { expect } from "@playwright/test";
+
 import { grammyMatchers, registerGrammyMatchers } from "./matchers";
 import type { GrammyMatcherAssertions } from "./types";
 
-declare global {
-  namespace jest {
-    interface Matchers<R> extends GrammyMatcherAssertions<R> {}
-  }
-}
+registerGrammyMatchers(expect);
 
-registerGrammyMatchers();
+declare module "@playwright/test" {
+  interface Matchers<R, T = unknown> extends GrammyMatcherAssertions<R> {}
+}
 
 export { grammyMatchers, registerGrammyMatchers };
 export type { GrammyMatcherAssertions };

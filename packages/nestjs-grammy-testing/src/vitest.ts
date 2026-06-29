@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 /**
- * Side-effect entry point for Vitest.
+ * Vitest entry point.
  *
- * Import once from a Vitest setup file to register the grammY matchers and
- * augment Vitest's assertion types:
+ * Import once from a Vitest setup file:
  *
  * ```ts
  * // vitest.setup.ts
@@ -27,7 +26,7 @@
 import "reflect-metadata";
 import { expect } from "vitest";
 
-import { registerGrammyMatchers } from "./matchers";
+import { grammyMatchers, registerGrammyMatchers } from "./matchers";
 import type { GrammyMatcherAssertions } from "./types";
 
 registerGrammyMatchers(expect);
@@ -37,3 +36,6 @@ declare module "vitest" {
   interface Assertion<T = any> extends GrammyMatcherAssertions<T> {}
   interface AsymmetricMatchersContaining extends GrammyMatcherAssertions<void> {}
 }
+
+export { grammyMatchers, registerGrammyMatchers };
+export type { GrammyMatcherAssertions };

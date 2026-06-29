@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 /**
- * Jest entry point.
+ * Bun test entry point.
  *
- * Import once from a Jest setup file (uses the global `expect`):
+ * Import once from a Bun test preload file (`bunfig.toml` -> `preload`):
  *
  * ```ts
- * // jest.setup.ts
- * import "@mdreal/nestjs-grammy-testing/jest";
+ * // bun.setup.ts
+ * import "@mdreal/nestjs-grammy-testing/bun";
  * ```
  */
+import { expect } from "bun:test";
 import "reflect-metadata";
 
 import { grammyMatchers, registerGrammyMatchers } from "./matchers";
 import type { GrammyMatcherAssertions } from "./types";
 
-declare global {
-  namespace jest {
-    interface Matchers<R> extends GrammyMatcherAssertions<R> {}
-  }
-}
+registerGrammyMatchers(expect);
 
-registerGrammyMatchers();
+declare module "bun:test" {
+  interface Matchers<T = unknown> extends GrammyMatcherAssertions<T> {}
+  interface AsymmetricMatchers extends GrammyMatcherAssertions<unknown> {}
+}
 
 export { grammyMatchers, registerGrammyMatchers };
 export type { GrammyMatcherAssertions };

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Framework-agnostic testing core for @mdreal/nestjs-grammy.
+// The grammY matchers are framework-coupled (they need a test runner's
+// `expect`), so they live behind per-framework entry points instead:
+//   import "@mdreal/nestjs-grammy-testing/jest";    // or /vitest, /bun, ...
 import "reflect-metadata";
 
-import { registerGrammyMatchers } from "./matchers";
-import "./matchers/jest-matchers";
-
-export * from "./matchers";
 export * from "./mock-api";
 export type * from "./mock-api";
 export * from "./module";
@@ -27,5 +27,3 @@ export * from "./testing-tokens";
 export * from "./tester";
 export * from "./update-factory";
 export type * from "./types";
-
-registerGrammyMatchers();

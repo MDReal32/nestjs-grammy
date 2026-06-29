@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 /**
- * Jest entry point.
+ * Standalone `expect` entry point.
  *
- * Import once from a Jest setup file (uses the global `expect`):
+ * For any runner that uses the standalone `expect` package (e.g. Mocha or
+ * `node:test` paired with `expect`):
  *
  * ```ts
- * // jest.setup.ts
- * import "@mdreal/nestjs-grammy-testing/jest";
+ * import "@mdreal/nestjs-grammy-testing/expect";
  * ```
  */
+import { expect } from "expect";
 import "reflect-metadata";
 
 import { grammyMatchers, registerGrammyMatchers } from "./matchers";
 import type { GrammyMatcherAssertions } from "./types";
 
-declare global {
-  namespace jest {
-    interface Matchers<R> extends GrammyMatcherAssertions<R> {}
-  }
-}
+registerGrammyMatchers(expect);
 
-registerGrammyMatchers();
+declare module "expect" {
+  interface Matchers<R, T = unknown> extends GrammyMatcherAssertions<R> {}
+  interface AsymmetricMatchers extends GrammyMatcherAssertions<void> {}
+}
 
 export { grammyMatchers, registerGrammyMatchers };
 export type { GrammyMatcherAssertions };

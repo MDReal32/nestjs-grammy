@@ -3,14 +3,10 @@ import { defineConfig } from "vite";
 import dtsPlugin from "vite-plugin-dts";
 
 export default defineConfig({
-  // rollupTypes is intentionally off: the framework entry points
-  // (jest/vitest) ship ambient `declare module`/`declare global`
-  // augmentations that api-extractor mangles when bundling multiple entries.
-  // entryRoot/include keep declarations rooted at build/ (not build/src/).
+  // Per-entry declarations (no rollup): each framework entry ships its own
+  // ambient `declare module`/`declare global` augmentation. A single rolled-up
+  // pass (api-extractor) merges/loses those across entries.
   plugins: [swc.vite(), dtsPlugin({ rollupTypes: false, include: ["src"], entryRoot: "src" })],
-  ssr: {
-    external: ["@mdreal/nestjs-grammy", "@nestjs/common", "@nestjs/core", "@nestjs/testing", "grammy", "vitest"]
-  },
   build: {
     outDir: "build",
     ssr: true,
@@ -18,10 +14,13 @@ export default defineConfig({
       entry: {
         "nestjs-grammy-testing": "src/main.ts",
         "jest": "src/jest.ts",
-        "vitest": "src/vitest.ts"
+        "vitest": "src/vitest.ts",
+        "bun": "src/bun.ts",
+        "expect": "src/expect.ts",
+        "playwright": "src/playwright.ts"
       },
-      formats: ["es", "cjs"],
-      fileName: (format, entryName) => `${entryName}.${format === "cjs" ? "cjs" : "js"}`
+      formats: ["es"],
+      fileName: (_format, entryName) => `${entryName}.js`
     }
   }
 });

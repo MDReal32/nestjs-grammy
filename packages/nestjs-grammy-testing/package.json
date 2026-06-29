@@ -24,21 +24,29 @@
   "exports": {
     ".": {
       "types": "./build/main.d.ts",
-      "import": "./build/nestjs-grammy-testing.js",
-      "require": "./build/nestjs-grammy-testing.cjs"
+      "import": "./build/nestjs-grammy-testing.js"
     },
     "./jest": {
       "types": "./build/jest.d.ts",
-      "import": "./build/jest.js",
-      "require": "./build/jest.cjs"
+      "import": "./build/jest.js"
     },
     "./vitest": {
       "types": "./build/vitest.d.ts",
-      "import": "./build/vitest.js",
-      "require": "./build/vitest.cjs"
+      "import": "./build/vitest.js"
+    },
+    "./bun": {
+      "types": "./build/bun.d.ts",
+      "import": "./build/bun.js"
+    },
+    "./expect": {
+      "types": "./build/expect.d.ts",
+      "import": "./build/expect.js"
+    },
+    "./playwright": {
+      "types": "./build/playwright.d.ts",
+      "import": "./build/playwright.js"
     }
   },
-  "main": "./build/nestjs-grammy-testing.cjs",
   "module": "./build/nestjs-grammy-testing.js",
   "types": "./build/main.d.ts",
   "files": [
@@ -58,7 +66,10 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.1.24",
     "@nestjs/testing": "^11.0.1",
+    "@playwright/test": "^1.61.1",
+    "@types/bun": "^1.3.14",
     "@types/node": "^24.10.1",
+    "expect": "^30.4.1",
     "prettier": "^3.6.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
@@ -71,9 +82,17 @@
   "peerDependencies": {
     "@mdreal/nestjs-grammy": "^1.0.0",
     "@nestjs/testing": "^10 || ^11",
+    "@playwright/test": ">=1.30",
+    "expect": ">=28",
     "vitest": ">=1"
   },
   "peerDependenciesMeta": {
+    "@playwright/test": {
+      "optional": true
+    },
+    "expect": {
+      "optional": true
+    },
     "vitest": {
       "optional": true
     }
