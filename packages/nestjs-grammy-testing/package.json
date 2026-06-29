@@ -23,14 +23,24 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./build/nestjs-grammy-testing.d.ts",
+      "types": "./build/main.d.ts",
       "import": "./build/nestjs-grammy-testing.js",
       "require": "./build/nestjs-grammy-testing.cjs"
+    },
+    "./jest": {
+      "types": "./build/jest.d.ts",
+      "import": "./build/jest.js",
+      "require": "./build/jest.cjs"
+    },
+    "./vitest": {
+      "types": "./build/vitest.d.ts",
+      "import": "./build/vitest.js",
+      "require": "./build/vitest.cjs"
     }
   },
   "main": "./build/nestjs-grammy-testing.cjs",
   "module": "./build/nestjs-grammy-testing.js",
-  "types": "./build/nestjs-grammy-testing.d.ts",
+  "types": "./build/main.d.ts",
   "files": [
     "build",
     "README.md"
@@ -55,11 +65,18 @@
     "typescript": "^5.8.3",
     "unplugin-swc": "^1.5.9",
     "vite": "^8.0.15",
-    "vite-plugin-dts": "^4.5.4"
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "~4.1.7"
   },
   "peerDependencies": {
     "@mdreal/nestjs-grammy": "^1.0.0",
-    "@nestjs/testing": "^10 || ^11"
+    "@nestjs/testing": "^10 || ^11",
+    "vitest": ">=1"
+  },
+  "peerDependenciesMeta": {
+    "vitest": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22"

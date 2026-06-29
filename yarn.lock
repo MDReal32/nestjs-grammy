@@ -2425,6 +2425,7 @@ __metadata:
     unplugin-swc: "npm:^1.5.9"
     vite: "npm:^8.0.15"
     vite-plugin-dts: "npm:^4.5.4"
+    vitest: "npm:~4.1.7"
   peerDependencies:
     "@mdreal/nestjs-grammy": ^1.0.0
     "@nestjs/testing": ^10 || ^11
