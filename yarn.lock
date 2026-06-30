@@ -2432,8 +2432,14 @@ __metadata:
   peerDependencies:
     "@mdreal/nestjs-grammy": ^1.0.0
     "@nestjs/testing": ^10 || ^11
+    "@playwright/test": ">=1.30"
+    expect: ">=28"
     vitest: ">=1"
   peerDependenciesMeta:
+    "@playwright/test":
+      optional: true
+    expect:
+      optional: true
     vitest:
       optional: true
   languageName: unknown
