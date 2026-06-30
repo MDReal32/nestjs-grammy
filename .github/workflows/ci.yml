@@ -6,8 +6,8 @@ on:
     branches: [master]
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   checks:
@@ -28,3 +28,68 @@ jobs:
 
       - name: Build, typecheck, lint
         run: yarn nx run-many -t build typecheck lint
+
+  release:
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: yarn
+          registry-url: https://registry.npmjs.org
+
+      - name: Upgrade npm for OIDC trusted publishing
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build packages
+        run: yarn nx run-many -t build
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Release (version, changelog, tag, publish)
+        run: |
+          set -eo pipefail
+          spec="${{ inputs.specifier }}"
+          if [ -n "$spec" ]; then
+            yarn nx release "$spec" ${{ inputs.first-release && '--first-release' || '' }} --yes
+            exit 0
+          fi
+          git fetch --tags --quiet origin || true
+          last_tag=$(git tag --list "@mdreal/nestjs-grammy@*" --sort=-v:refname | head -n1)
+          if [ -n "$last_tag" ]; then
+            changed=$(git diff --name-only "$last_tag" HEAD -- packages/ | grep -E 'packages/[^/]+/(src/|package\.json)' || true)
+            if [ -z "$changed" ]; then
+              echo "::notice::No package src/package.json changes since $last_tag — skipping release"
+              exit 0
+            fi
+          fi
+          name=$(node -p "require('./packages/nestjs-grammy/package.json').name")
+          ver=$(node -p "require('./packages/nestjs-grammy/package.json').version")
+          if npm view "$name@$ver" version >/dev/null 2>&1; then
+            yarn nx release patch --yes
+          else
+            yarn nx release publish
+          fi
+        env:
+          NPM_CONFIG_PROVENANCE: "true"
+
+      - name: Push release commit and tags
+        run: git push --follow-tags origin master
