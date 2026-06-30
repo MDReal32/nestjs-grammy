@@ -236,42 +236,35 @@ const adminTester = await GrammyTesting.create(moduleRef, {
 
 ## Test runner integration
 
-The matcher implementation is test-runner neutral. It only needs an `expect.extend(...)` compatible object.
+The matchers are test-runner neutral — they only need an `expect.extend(...)`-compatible object. Import the entry point for your runner **once** from a setup file. It registers the matchers and augments that runner's matcher types automatically — no manual `registerGrammyMatchers` call or `declare module` block needed.
 
-Jest users get runtime registration and matcher types by importing the package:
+| Runner                     | Import                                               | Where to put it                      |
+| -------------------------- | ---------------------------------------------------- | ------------------------------------ |
+| Jest                       | `import "@mdreal/nestjs-grammy-testing/jest";`       | `setupFilesAfterEach`                |
+| Vitest                     | `import "@mdreal/nestjs-grammy-testing/vitest";`     | `test.setupFiles`                    |
+| Bun                        | `import "@mdreal/nestjs-grammy-testing/bun";`        | `bunfig.toml` → `preload`            |
+| Playwright Test            | `import "@mdreal/nestjs-grammy-testing/playwright";` | a setup / fixture file               |
+| node:test, Mocha, or other | `import "@mdreal/nestjs-grammy-testing/expect";`     | requires the standalone `expect` pkg |
 
-```ts
-import "@mdreal/nestjs-grammy-testing";
-```
-
-Vitest users should register the matchers in a setup file:
-
-```ts
-import { expect } from "vitest";
-
-import { registerGrammyMatchers } from "@mdreal/nestjs-grammy-testing";
-
-registerGrammyMatchers(expect);
-```
-
-Add a project-local Vitest type augmentation if you want typed custom matchers:
+Example (Vitest):
 
 ```ts
-import type { GrammyMatcherAssertions } from "@mdreal/nestjs-grammy-testing";
-
-declare module "vitest" {
-  interface Assertion<T = unknown> extends GrammyMatcherAssertions<void> {}
-  interface AsymmetricMatchersContaining extends GrammyMatcherAssertions<void> {}
-}
+// vitest.setup.ts
+import "@mdreal/nestjs-grammy-testing/vitest";
 ```
-
-Other runners can use the same pattern if they expose `expect.extend`:
 
 ```ts
-import { registerGrammyMatchers } from "@mdreal/nestjs-grammy-testing";
+// vitest.config.ts
+import { defineConfig } from "vitest/config";
 
-registerGrammyMatchers(expect);
+export default defineConfig({
+  test: { setupFiles: ["./vitest.setup.ts"] }
+});
 ```
+
+Each entry also re-exports `registerGrammyMatchers`, `grammyMatchers`, and the
+`GrammyMatcherAssertions` type if you need to wire things up manually. For a runner not
+listed above, use the `/expect` entry (it drives the standalone [`expect`](https://www.npmjs.com/package/expect) package, which most runners can adopt).
 
 ## Semantic assertions
 
