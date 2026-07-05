@@ -31,6 +31,7 @@ jobs:
 
   release:
     needs: checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     permissions:
       contents: write
