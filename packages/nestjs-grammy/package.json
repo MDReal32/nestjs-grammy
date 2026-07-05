@@ -1,14 +1,19 @@
 {
   "name": "@mdreal/nestjs-grammy",
   "version": "1.1.2",
-  "description": "NestJS module for building Telegram bots with grammY. Supports multiple bots, decorators, injection, polling, and webhooks.",
+  "description": "NestJS module for building Telegram bots with grammY — decorator-driven handlers, multi-bot support, dependency injection, and polling/webhook runtimes.",
   "keywords": [
     "nestjs",
-    "telegram",
     "grammy",
+    "grammyjs",
+    "telegram",
+    "telegram-bot",
     "bot",
     "decorators",
-    "module"
+    "dependency-injection",
+    "webhook",
+    "polling",
+    "typescript"
   ],
   "homepage": "https://github.com/MDReal32/nestjs-grammy#readme",
   "bugs": {
