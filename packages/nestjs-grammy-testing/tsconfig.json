@@ -20,5 +20,14 @@
       "@mdreal/nestjs-grammy-testing": ["src/main.ts"]
     }
   },
-  "include": ["src", "tests", "vite.config.ts"]
+  "include": [
+    "src",
+    "tests",
+    "vite.config.ts",
+    "entrypoints/jest.d.ts",
+    "entrypoints/vitest.d.ts",
+    "entrypoints/bun.d.ts",
+    "entrypoints/expect.d.ts",
+    "entrypoints/playwright.d.ts"
+  ]
 }

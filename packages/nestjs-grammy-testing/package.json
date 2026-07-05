@@ -32,39 +32,43 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./build/main.d.ts",
-      "import": "./build/nestjs-grammy-testing.js"
+      "types": "./build/nestjs-grammy-testing.d.ts",
+      "import": "./build/nestjs-grammy-testing.js",
+      "require": "./build/nestjs-grammy-testing.cjs"
     },
     "./jest": {
-      "types": "./build/jest.d.ts",
-      "import": "./build/jest.js"
+      "types": "./entrypoints/jest.d.ts",
+      "import": "./entrypoints/jest.js",
+      "require": "./entrypoints/jest.cjs"
     },
     "./vitest": {
-      "types": "./build/vitest.d.ts",
-      "import": "./build/vitest.js"
+      "types": "./entrypoints/vitest.d.ts",
+      "import": "./entrypoints/vitest.js"
     },
     "./bun": {
-      "types": "./build/bun.d.ts",
-      "import": "./build/bun.js"
+      "types": "./entrypoints/bun.d.ts",
+      "import": "./entrypoints/bun.js"
     },
     "./expect": {
-      "types": "./build/expect.d.ts",
-      "import": "./build/expect.js"
+      "types": "./entrypoints/expect.d.ts",
+      "import": "./entrypoints/expect.js",
+      "require": "./entrypoints/expect.cjs"
     },
     "./playwright": {
-      "types": "./build/playwright.d.ts",
-      "import": "./build/playwright.js"
+      "types": "./entrypoints/playwright.d.ts",
+      "import": "./entrypoints/playwright.js"
     }
   },
   "module": "./build/nestjs-grammy-testing.js",
-  "types": "./build/main.d.ts",
+  "types": "./build/nestjs-grammy-testing.d.ts",
   "files": [
     "build",
+    "entrypoints",
     "README.md"
   ],
   "scripts": {
     "build": "vite build",
-    "lint": "prettier --check \"src/**/*.ts\" \"*.{cjs,json,ts}\" \"README.md\"",
+    "lint": "prettier --check \"src/**/*.ts\" \"entrypoints/**/*.{cjs,js,ts}\" \"*.{cjs,js,json,ts}\" \"README.md\"",
     "prepack": "vite build",
     "typecheck": "tsc --noEmit"
   },
@@ -111,10 +115,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "nx": {
-    "implicitDependencies": [
-      "@mdreal/nestjs-grammy"
-    ]
   }
 }
