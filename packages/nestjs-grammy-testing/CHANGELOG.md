@@ -1,3 +1,9 @@
+## 1.1.3 (2026-07-05)
+
+### 🧱 Updated Dependencies
+
+- Updated @mdreal/nestjs-grammy to 1.1.3
+
 ## 1.1.2 (2026-06-30)
 
 ### 🚀 Features
