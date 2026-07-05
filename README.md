@@ -4,64 +4,46 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE)
 [![Downloads](https://img.shields.io/npm/dw/@mdreal/nestjs-grammy)](https://www.npmjs.com/package/@mdreal/nestjs-grammy)
 
-**A fully-typed, decorator-driven [NestJS](https://nestjs.com) module for building Telegram bots with [grammY](https://grammy.dev/).**
+> Build **Telegram bots** with **NestJS** ergonomics and **[grammY](https://grammy.dev/)** power — fully typed, decorator-driven, and test-ready.
 
-This package provides a clean, modular approach to integrating grammY bots into your NestJS applications. It is designed for developers who value **SOLID principles**, **KISS design**, and first-class TypeScript support.
+`@mdreal/nestjs-grammy` wraps grammY in an idiomatic [NestJS](https://nestjs.com) module. Register bots as
+dynamic modules, write handlers with decorators, and inject bot/API instances anywhere with normal DI. A
+companion package, [`@mdreal/nestjs-grammy-testing`](packages/nestjs-grammy-testing), lets you test handlers
+against a mock Telegram API — no network, no real token.
 
----
+## Contents
 
-## ✨ Highlights
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Features](#features)
+- [Multiple bots](#multiple-bots)
+- [Conversations](#conversations)
+- [Dependency injection](#dependency-injection)
+- [Configuration](#configuration)
+- [Testing](#testing)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 
-- **Dynamic NestJS Module**
-  Easily register one or multiple Telegram bots with `TelegramModule.forRoot()` / `forRootAsync()`.
-
-- **Multiple Bots in One App**
-  Run any number of bots in a single NestJS instance. Each bot has a unique name and isolated scope.
-
-- **Decorator-based API**
-  Write expressive and concise handlers with decorators:
-
-  - `@Command("...", { description, isHidden })`, `@Hears("...")`, `@On("...")`, `@Use()`
-  - Shorthands: `@Start()`, `@Help()` — accept the same `CommandOptions`
-  - `@Conversation("name")` for conversational flows (requires `@grammyjs/conversations`)
-  - Commands are auto-registered via `bot.api.setMyCommands()` at bootstrap
-
-- **Scoped Handlers**
-  `@Scope("botName")` / `@Scopes([...])` let you control which bot executes which handler.
-
-- **Elegant Dependency Injection**
-  Inject instances directly into services:
-
-  - `@InjectBot("name")`
-  - `@InjectApi("name")`
-  - `@InjectWebhook("name")`
-  - `@InjectOptions("name")`
-
-- **Nest-style Integration**
-  Uses Nest’s `DiscoveryService` to auto-wire handlers at bootstrap. No manual plumbing required.
-
-- **Flexible Runtime**
-  Choose between **polling** or **webhook** mode per bot. Supports grammY plugins, middlewares, logging, and rate limiting.
-
----
-
-## 📦 Installation
+## Installation
 
 ```bash
-pnpm add @mdreal/nestjs-grammy
+npm install @mdreal/nestjs-grammy
 # peer dependencies (required in your app)
-pnpm add @nestjs/common @nestjs/core reflect-metadata
+npm install @nestjs/common @nestjs/core reflect-metadata
 ```
 
----
+> Any package manager works (npm, yarn, pnpm, bun) — swap `npm install` for your tool of choice.
 
-## 🚀 Getting Started
+## Quick start
 
-### Single Bot Setup
+**1. Register a bot** with `TelegramModule.forRoot()`:
 
 ```ts
 import { TelegramModule } from "@mdreal/nestjs-grammy";
 import { Module } from "@nestjs/common";
+
+import { BotHandlers } from "./bot.handlers";
 
 @Module({
   imports: [
@@ -69,14 +51,15 @@ import { Module } from "@nestjs/common";
       name: "mybot",
       token: process.env.TELEGRAM_TOKEN!,
       mode: "auto", // "auto" | "polling" | "webhook"
-      logging: true // use NestJS logger
+      logging: true
     })
-  ]
+  ],
+  providers: [BotHandlers]
 })
 export class AppModule {}
 ```
 
-### Basic Handler
+**2. Write handlers** as normal injectable providers:
 
 ```ts
 import type { Context } from "grammy";
@@ -103,17 +86,27 @@ export class BotHandlers {
 }
 ```
 
-> Commands without `isHidden: true` are automatically registered with Telegram via `setMyCommands()` at bootstrap.
+That's it. Non-hidden commands are automatically registered with Telegram via `setMyCommands()` at bootstrap.
 
----
+## Features
 
-## 🤖 Multiple Bots Example
+- **Dynamic module** — register one or many bots with `TelegramModule.forRoot()` / `forRootAsync()`.
+- **Multiple bots** — run any number of bots in one app, each isolated by name and `@Scope`.
+- **Decorator-based handlers** — `@Command`, `@Start`, `@Help`, `@Hears`, `@On`, `@Use`, `@KeyboardCallback`, and `@Conversation`.
+- **Dependency injection** — inject instances with `@InjectBot`, `@InjectApi`, `@InjectWebhook`, `@InjectOptions`.
+- **Auto-wiring** — handlers are discovered and bound at bootstrap via Nest's `DiscoveryService`; no manual plumbing.
+- **Flexible runtime** — per-bot polling or webhook mode, plus grammY plugins, custom middlewares, logging, and rate limiting.
+- **First-class testing** — a dedicated package to unit-test handlers without the Telegram API.
+
+## Multiple bots
+
+Register several bots and use `@Scope` to bind a handler class to a specific one:
 
 ```ts
 import type { Context } from "grammy";
 
 import { Command, Scope } from "@mdreal/nestjs-grammy";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Module } from "@nestjs/common";
 
 @Module({
   imports: [
@@ -133,17 +126,17 @@ export class BetaHandlers {
 }
 ```
 
----
+## Conversations
 
-## 💬 Conversations
-
-Conversational flows are supported via the optional [`@grammyjs/conversations`](https://grammy.dev/plugins/conversations) peer dependency.
+Conversational flows use the optional [`@grammyjs/conversations`](https://grammy.dev/plugins/conversations) peer
+dependency:
 
 ```bash
-pnpm add @grammyjs/conversations
+npm install @grammyjs/conversations
 ```
 
-Mark any method with `@Conversation()` and the binder will automatically install the `conversations()` middleware and register the handler with `createConversation()` at bootstrap.
+Mark any method with `@Conversation()` — the module installs the `conversations()` middleware and registers the
+handler with `createConversation()` automatically at bootstrap:
 
 ```ts
 import type { Context } from "grammy";
@@ -170,12 +163,25 @@ export class BotHandlers {
 }
 ```
 
-> **Note:** The `@Conversation` name (e.g. `"collect"`) must match the string passed to `ctx.conversation.enter("collect")`.
-> If no name is provided, the method name is used as the conversation identifier.
+Need persistent conversation storage or other plugin options? Pass them via the `conversations` module option —
+they are forwarded straight to `conversations()`:
 
----
+```ts
+TelegramModule.forRoot({
+  name: "mybot",
+  token: process.env.TELEGRAM_TOKEN!,
+  conversations: {
+    storage: {
+      /* e.g. a MongoDB / Redis storage adapter */
+    }
+  }
+});
+```
 
-## 💉 Dependency Injection
+> The `@Conversation` name (e.g. `"collect"`) must match the string passed to `ctx.conversation.enter("collect")`.
+> If no name is given, the method name is used.
+
+## Dependency injection
 
 ```ts
 import type { Api, Bot } from "grammy";
@@ -196,76 +202,119 @@ export class BotService {
 }
 ```
 
----
+## Configuration
 
-## ⚙️ Configuration Options
+Every option accepted by `TelegramModule.forRoot()` (and the `useFactory` result of `forRootAsync()`):
 
 ```ts
 TelegramModule.forRoot({
-  name: "mybot",
-  token: "...",
-  mode: "auto" | "polling" | "webhook",
-  apiPlugins: [], // register grammY API plugins
+  name: "mybot", // unique bot name (required)
+  token: "...", // BotFather token (required)
+  mode: "auto", // "auto" | "polling" | "webhook"
+  apiPlugins: [], // grammY API plugins (api => void)
   rateLimit: {}, // in-memory rate limiting
   middlewares: [], // custom grammY middlewares
-  polling: {}, // PollingOptions
-  webhook: { url: "" }, // WebhookOptions
-  logging: true, // enable NestJS logger
-  onError: err => {},
-  onStart: info => {}
+  polling: {}, // grammY PollingOptions
+  webhook: { url: "" }, // webhook options
+  conversations: {}, // options forwarded to @grammyjs/conversations
+  logging: true, // enable the NestJS logger
+  onError: err => {}, // error boundary callback
+  onStart: info => {} // called when the bot starts
 });
 ```
 
----
+Use `forRootAsync()` when options depend on other providers (e.g. `ConfigService`).
 
-## 🧭 Roadmap
+## Testing
 
-### ✅ Implemented
+Test handlers and conversations without touching the real Telegram API using
+[`@mdreal/nestjs-grammy-testing`](packages/nestjs-grammy-testing): a mock Telegram API, a `GrammyTestingModule`
+for isolated handler tests (or attaching to a real `AppModule`), and semantic matchers like
+`toHaveHandledCommand` and `toHaveRepliedWithText`.
 
-- Core decorators: `@Command`, `@Start`, `@Help`, `@Hears`, `@On`, `@Use` — commands auto-register via `setMyCommands()` using `CommandOptions`
+```bash
+npm install -D @mdreal/nestjs-grammy-testing
+```
+
+Register the matchers once in your test-runner setup file. Each runner has its own entry — `vitest`, `jest`,
+`bun`, `playwright`, or `expect` (for node:test and others):
+
+```ts
+// vitest.setup.ts (add to test.setupFiles) — or jest.setup.ts, bun, etc.
+import "@mdreal/nestjs-grammy-testing/vitest";
+```
+
+Then write plain NestJS tests:
+
+```ts
+import { GrammyBotTester, GrammyTestingModule } from "@mdreal/nestjs-grammy-testing";
+import { Module } from "@nestjs/common";
+import { Test } from "@nestjs/testing";
+
+import { BotHandlers } from "./bot.handlers";
+
+@Module({ providers: [BotHandlers] })
+class BotHandlersModule {}
+
+it("replies to /start", async () => {
+  const moduleRef = await Test.createTestingModule({
+    imports: [
+      GrammyTestingModule.forRoot({
+        imports: [BotHandlersModule],
+        botName: "default",
+        token: "test-token"
+      })
+    ]
+  }).compile();
+
+  await moduleRef.init();
+
+  const tester = moduleRef.get(GrammyBotTester);
+  await tester.sendCommand("start");
+
+  expect(tester).toHaveHandledCommand("start");
+  expect(tester).toHaveRepliedWithText("Welcome to the bot!");
+
+  await moduleRef.close();
+});
+```
+
+See the [testing package README](packages/nestjs-grammy-testing/README.md) for the full guide — multi-bot
+testing, provider overrides, raw update factories, and per-runner setup.
+
+## Roadmap
+
+**Implemented**
+
+- Core decorators (`@Command`, `@Start`, `@Help`, `@Hears`, `@On`, `@Use`, `@KeyboardCallback`) with auto-registered commands
 - Multi-bot support with `@Scope` / `@Scopes`
-- Injection helpers: `@InjectBot`, `@InjectApi`, `@InjectWebhook`, `@InjectOptions`
+- Injection helpers (`@InjectBot`, `@InjectApi`, `@InjectWebhook`, `@InjectOptions`)
 - Auto-binding via `DiscoveryService`
-- `@Conversation()` — optional conversational flows via `@grammyjs/conversations`
+- `@Conversation()` with configurable `conversations` options (storage, plugins, hooks)
 
-### 🚧 Planned Built-ins
+**Planned**
 
-- `@AdminOnly()` — restricts handlers to configured admin user IDs
+- `@AdminOnly()` — restrict handlers to configured admin user IDs
 - `@PrivateChat()` / `@GroupChat()` — run handlers only in specific chat types
-- `@Throttle(ms)` — simple per-user throttling for spam control
-- `@Alias("...")` — define multiple triggers for the same command
+- `@Throttle(ms)` — per-user throttling for spam control
+- `@Alias("...")` — multiple triggers for one command
 - `@Fallback()` — catch-all handler for unrecognized input
-- Auto-generated `/help` command that aggregates available commands
+- Auto-generated `/help` that aggregates registered commands (today `@Help()` is only a handler shorthand for `@Command("help")`)
+- CLI generator (`nest g handler`) and graceful shutdown hooks (a manual `stop()` exists; Nest-lifecycle integration is pending)
 
-### 🚫 Won't Implement
+## Documentation & references
 
-- ~~`@InlineQuery()`~~ / ~~`@ChosenInlineResult()`~~ / ~~`@CallbackQuery("...")`~~ — use `@On(...)` or handle inside `@Conversation`
+- [`@mdreal/nestjs-grammy` docs](packages/nestjs-grammy/README.md) — core module reference
+- [`@mdreal/nestjs-grammy-testing` docs](packages/nestjs-grammy-testing/README.md) — testing guide
+- [`samples/simple-usage`](samples/simple-usage) — minimal working example app
+- [grammY documentation](https://grammy.dev/) — bot API & middleware
+- [NestJS documentation](https://docs.nestjs.com/) — framework fundamentals
 
-### 🛠 Infrastructure
+## Contributing
 
-- CLI generator: `nest g handler` for scaffolded handlers with decorators
-- Graceful shutdown hooks (`bot.stop()` integration with Nest lifecycle)
-- Example starter projects (REST + bot hybrid apps)
+Contributions, issues, and feature requests are welcome. Please open an issue to discuss ideas before submitting
+a PR.
 
----
+## License
 
-## 📖 Documentation & References
-
-- [grammY Documentation](https://grammy.dev/) — for bot API & middleware
-- [NestJS Documentation](https://docs.nestjs.com/) — for framework fundamentals
-
-This library bridges the two worlds: **ergonomics of grammY** inside the **structured environment of NestJS**.
-
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome.
-Please open an issue to discuss ideas before submitting PRs.
-
----
-
-## 📄 License
-
-Licensed under the [Apache License 2.0](./LICENSE).  
-Copyright © 2025 [MDReal](https://github.com/mdreal)
+Licensed under the [Apache License 2.0](./LICENSE). Copyright © 2025 [MDReal](https://github.com/mdreal).
