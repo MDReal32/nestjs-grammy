@@ -13,28 +13,14 @@
     "start:debug": "nest start --debug --watch",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
-    "test": "jest",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:bun": "bun --config=tests/bun/bunfig.toml test src",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config tests/jest/jest.config.js --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test:watch": "jest --watch"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testEnvironment": "node",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    }
+    "test:jest": "jest --config tests/jest/jest.config.js --passWithNoTests",
+    "test:jest:cov": "jest --config tests/jest/jest.config.js --coverage --passWithNoTests",
+    "test:jest:watch": "jest --config tests/jest/jest.config.js --watch",
+    "test:node": "tsx --test --import ./tests/node/setup.ts src/*.spec.ts",
+    "test:vitest": "vitest run --config tests/vitest/vitest.config.ts"
   },
   "dependencies": {
     "@mdreal/nestjs-grammy": "workspace:^",
@@ -47,9 +33,11 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
+    "@mdreal/nestjs-grammy-testing": "workspace:^",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@swc/core": "^1.15.43",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
@@ -57,6 +45,7 @@
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
+    "expect": "^30.4.1",
     "globals": "^16.0.0",
     "jest": "^30.0.0",
     "prettier": "^3.4.2",
@@ -66,16 +55,10 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.22.5",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
-  },
-  "nx": {
-    "targets": {
-      "lint": {
-        "dependsOn": [
-          "^build"
-        ]
-      }
-    }
+    "typescript-eslint": "^8.20.0",
+    "unplugin-swc": "^1.5.9",
+    "vitest": "~4.1.7"
   }
 }

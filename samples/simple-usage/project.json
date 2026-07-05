@@ -1,0 +1,10 @@
+{
+  "targets": {
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "test:jest": {
+      "dependsOn": ["^build"]
+    }
+  }
+}

@@ -10,7 +10,7 @@
     "build": "nx run-many -t build",
     "format": "prettier --write .",
     "lint": "prettier --check .",
-    "test": "nx run-many -t test",
+    "test": "nx run-many -t test:jest",
     "typecheck": "nx run-many -t typecheck"
   },
   "dependencies": {
