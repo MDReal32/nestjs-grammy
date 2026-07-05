@@ -220,11 +220,11 @@ TelegramModule.forRoot({
 
 ### ✅ Implemented
 
-- Core decorators: `@Command`, `@Start`, `@Help`, `@Hears`, `@On`, `@Use` — commands auto-register via `setMyCommands()` using `CommandOptions`
+- Core decorators: `@Command`, `@Start`, `@Help`, `@Hears`, `@On`, `@Use`, `@KeyboardCallback` — commands auto-register via `setMyCommands()` using `CommandOptions`
 - Multi-bot support with `@Scope` / `@Scopes`
 - Injection helpers: `@InjectBot`, `@InjectApi`, `@InjectWebhook`, `@InjectOptions`
 - Auto-binding via `DiscoveryService`
-- `@Conversation()` — optional conversational flows via `@grammyjs/conversations`
+- `@Conversation()` — optional conversational flows via `@grammyjs/conversations`, with configurable `conversations` options (storage, plugins, hooks)
 
 ### 🚧 Planned Built-ins
 
@@ -233,7 +233,7 @@ TelegramModule.forRoot({
 - `@Throttle(ms)` — simple per-user throttling for spam control
 - `@Alias("...")` — define multiple triggers for the same command
 - `@Fallback()` — catch-all handler for unrecognized input
-- Auto-generated `/help` command that aggregates available commands
+- Auto-generated `/help` that aggregates registered commands (today `@Help()` is only a handler shorthand for `@Command("help")`)
 
 ### 🚫 Won't Implement
 

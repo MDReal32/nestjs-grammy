@@ -15,6 +15,8 @@
  */
 import type { Api, Context as GrammyContext, MiddlewareFn, PollingOptions } from "grammy";
 
+import type { ConversationFlavor, ConversationOptions } from "@grammyjs/conversations";
+
 import type { LoggingOptions } from "./logging-options";
 import type { RateLimitOptions } from "./rate-limit-options";
 import type { WebhookOptions } from "./webhook-options";
@@ -110,4 +112,18 @@ export interface BotInstanceOptions<TContext extends GrammyContext = GrammyConte
    * Receives the bot name and mode.
    */
   readonly onStart?: (info: { readonly name: string; readonly mode: "polling" | "webhook" }) => void;
+
+  /**
+   * Options forwarded to `@grammyjs/conversations`'s `conversations()` middleware,
+   * installed automatically for bots that have a `@Conversation()` handler.
+   *
+   * Use this to configure persistent storage (`storage`), default plugins, or
+   * `onEnter`/`onExit` hooks. Requires the optional peer `@grammyjs/conversations`.
+   *
+   * @example
+   * ```ts
+   * conversations: { storage: { type: "mongodb", adapter: mongoStorageAdapter } }
+   * ```
+   */
+  readonly conversations?: ConversationOptions<ConversationFlavor<TContext>, ConversationFlavor<TContext>>;
 }

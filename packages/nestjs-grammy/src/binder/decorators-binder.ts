@@ -155,7 +155,7 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
     } catch {
       throw new Error(
         'Optional peer "@grammyjs/conversations" is required when using @Conversation(). ' +
-          "Install it: pnpm add @grammyjs/conversations"
+          "Install it with your package manager, e.g. npm install @grammyjs/conversations."
       );
     }
 
@@ -165,7 +165,8 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
         continue;
       }
 
-      bot.use(convMod.conversations());
+      const conversationsOptions = (this.registry.get(botName) as BotEntry | undefined)?.options.conversations;
+      bot.use(convMod.conversations(conversationsOptions));
     }
 
     for (const { fn, name, botName } of pendingConversations) {
@@ -185,7 +186,6 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
 
   private getConversationBot(botName: string) {
     const entry = this.registry.get(botName) as BotEntry | undefined;
-
     return entry?.bot as ConversationBot | undefined;
   }
 
