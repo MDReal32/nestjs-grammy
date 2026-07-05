@@ -1,3 +1,13 @@
+## 1.1.4 (2026-07-05)
+
+### 🚀 Features
+
+- **grammy:** allow configuring conversations() options via module config ([#1](https://github.com/MDReal32/nestjs-grammy/issues/1))
+
+### ❤️ Thank You
+
+- MDReal32 @MDReal32
+
 ## 1.1.3 (2026-07-05)
 
 This was a version bump only for @mdreal/nestjs-grammy to align it with other projects, there were no code changes.
