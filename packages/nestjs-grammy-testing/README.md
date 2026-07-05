@@ -240,7 +240,7 @@ The matchers are test-runner neutral — they only need an `expect.extend(...)`-
 
 | Runner                     | Import                                               | Where to put it                      |
 | -------------------------- | ---------------------------------------------------- | ------------------------------------ |
-| Jest                       | `import "@mdreal/nestjs-grammy-testing/jest";`       | `setupFilesAfterEach`                |
+| Jest                       | `import "@mdreal/nestjs-grammy-testing/jest";`       | `setupFilesAfterEnv`                 |
 | Vitest                     | `import "@mdreal/nestjs-grammy-testing/vitest";`     | `test.setupFiles`                    |
 | Bun                        | `import "@mdreal/nestjs-grammy-testing/bun";`        | `bunfig.toml` → `preload`            |
 | Playwright Test            | `import "@mdreal/nestjs-grammy-testing/playwright";` | a setup / fixture file               |
