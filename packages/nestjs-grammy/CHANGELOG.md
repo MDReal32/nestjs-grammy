@@ -1,3 +1,13 @@
+## 1.1.5 (2026-10-28)
+
+### 🚀 Features
+
+- **grammy:** upgrade grammy to 1.46.0 (Bot API 10.3) ([798f840](https://github.com/MDReal32/nestjs-grammy/commit/798f840))
+
+### ❤️ Thank You
+
+- MDReal32 @MDReal32
+
 ## 1.1.4 (2026-07-05)
 
 ### 🚀 Features
