@@ -63,15 +63,28 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Resolve next version
+        id: resolve
+        run: |
+          git fetch --tags --quiet origin || true
+          # Versions come from npm and git tags, not package.json: a run that published but never pushed its
+          # release commit must not make the next run reuse that version.
+          node .github/scripts/next-version.mjs
+
+      - name: Push backfilled tags
+        if: steps.resolve.outputs.backfilled != ''
+        run: git push origin $TAGS
+        env:
+          TAGS: ${{ steps.resolve.outputs.backfilled }}
+
       - name: Check for package changes
         id: changes
         run: |
           set -eo pipefail
-          git fetch --tags --quiet origin || true
           # Latest tag on this branch, stable or prerelease; "-" suffix sorts 1.2.3-next.N before 1.2.3.
           last_tag=$(git -c versionsort.suffix=- tag --merged HEAD --list "@mdreal/nestjs-grammy@*" --sort=-v:refname | head -n1 || true)
           if [ -n "$last_tag" ]; then
-            changed=$(git diff --name-only "$last_tag" HEAD -- packages/ | grep -E 'packages/[^/]+/(src/|package\.json)' || true)
+            changed=$(git diff --name-only "$last_tag" HEAD -- packages/ | grep -E 'packages/[^/]+/(src/|package.json)' || true)
             if [ -z "$changed" ]; then
               echo "::notice::No package src/package.json changes since $last_tag — skipping release"
               echo "release=false" >> "$GITHUB_OUTPUT"
@@ -79,25 +92,50 @@ jobs:
             fi
           fi
           echo "release=true" >> "$GITHUB_OUTPUT"
-          # The next channel tracks the next major: open it with a premajor, then continue the prerelease line.
-          stable=$(git tag --list "@mdreal/nestjs-grammy@*" | sed 's/.*@//' | grep -vE -- '-' | sort -V | tail -n1 || true)
-          pre=$(git tag --merged HEAD --list "@mdreal/nestjs-grammy@*-next.*" | sed 's/.*@//' | sort -V | tail -n1 || true)
-          if [ -n "$pre" ] && [ "${pre%%.*}" -gt "${stable%%.*}" ]; then
-            echo "specifier=prerelease" >> "$GITHUB_OUTPUT"
-          else
-            echo "specifier=premajor" >> "$GITHUB_OUTPUT"
-          fi
 
       - name: Version prerelease (version, changelog, tag)
+        id: version
         if: steps.changes.outputs.release == 'true'
-        run: yarn nx release ${{ steps.changes.outputs.specifier }} --preid next --skip-publish
+        run: yarn nx release "$VERSION" --skip-publish
+        env:
+          VERSION: ${{ steps.resolve.outputs.version }}
 
       - name: Publish to the next dist-tag
+        id: publish
         if: steps.changes.outputs.release == 'true'
         run: yarn nx release publish --tag next
         env:
           NPM_CONFIG_PROVENANCE: "true"
 
+      # Runs even when publishing failed or was cancelled: once any package version is on npm,
+      # git must get the matching release commit and tags.
       - name: Push release commit and tags
-        if: steps.changes.outputs.release == 'true'
-        run: git push --follow-tags origin next
+        if: always() && steps.version.outcome == 'success'
+        run: |
+          set -eo pipefail
+          tags=$(git tag --points-at HEAD)
+          published=false
+          if [ "$PUBLISH_OUTCOME" = "success" ]; then
+            published=true
+          else
+            for tag in $tags; do
+              for _ in 1 2 3 4 5; do
+                if npm view "${tag%@*}@${tag##*@}" version >/dev/null 2>&1; then published=true; break; fi
+                sleep 5
+              done
+            done
+          fi
+          if [ "$published" != "true" ]; then
+            echo "::warning::Nothing was published; not pushing the release commit and tags"
+            exit 0
+          fi
+          if ! git push origin HEAD:next; then
+            # next moved while releasing: replay the release commit on top and move its tags with it
+            git fetch --quiet origin next
+            git rebase origin/next
+            for tag in $tags; do git tag --force --annotate "$tag" --message "$tag" HEAD; done
+            git push origin HEAD:next
+          fi
+          git push origin $tags
+        env:
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
