@@ -47,7 +47,7 @@ export class GrammyBotTester<TContext extends GrammyContext = GrammyContext> {
     botInfo: TestBotInfoOptions = {}
   ) {
     if (!bot.isInited()) {
-      bot.botInfo = createTestBotInfo(botInfo);
+      bot.me = createTestBotInfo(botInfo);
     }
   }
 

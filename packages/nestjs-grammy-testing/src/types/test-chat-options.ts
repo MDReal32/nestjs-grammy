@@ -15,6 +15,6 @@
  */
 import type { Chat } from "grammy/types";
 
-export interface TestChatOptions extends Partial<Chat.PrivateChat> {
+export interface TestChatOptions extends Partial<Chat.Private> {
   readonly id?: number;
 }

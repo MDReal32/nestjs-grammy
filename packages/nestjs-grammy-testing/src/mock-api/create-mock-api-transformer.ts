@@ -26,8 +26,8 @@ import type { MockTelegramApi } from "./mock-telegram-api";
  * @returns Returns the created value.
  */
 export const createMockApiTransformer = (mockApi: MockTelegramApi): Transformer<RawApi> => {
-  return async (_prev, method, payload, signal) => {
-    const result = await mockApi.invoke(method, payload, signal);
+  return async (_prev, data, signal) => {
+    const result = await mockApi.invoke(data.method, data.payload, signal);
 
     return {
       ok: true,

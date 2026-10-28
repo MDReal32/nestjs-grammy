@@ -35,6 +35,35 @@ npm install @nestjs/common @nestjs/core reflect-metadata
 
 > Any package manager works (npm, yarn, pnpm, bun) — swap `npm install` for your tool of choice.
 
+### grammY 2.0 preview (`next`)
+
+The `next` dist-tag tracks grammY 2.0, which is in beta and published **only on [JSR](https://jsr.io/@grammyjs/grammy)**. Point the `@jsr` scope at JSR's npm registry, then install the preview together with the same grammY build:
+
+```ini
+# .npmrc (npm, pnpm, bun)
+@jsr:registry=https://npm.jsr.io
+```
+
+```yaml
+# .yarnrc.yml (yarn)
+npmScopes:
+  jsr:
+    npmRegistryServer: "https://npm.jsr.io"
+```
+
+```bash
+# npm
+npm install @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+# yarn
+yarn add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+# pnpm
+pnpm add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+# bun
+bun add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+```
+
+Installing `grammy` under the same alias keeps a single grammY copy, so `import { Context } from "grammy"` in your app resolves to v2. Coming from 1.x? Follow the **[migration guide](MIGRATION.md)**: handler changes (for example `ctx.reply` → `ctx.send`), `apiPlugins` and `polling` behaviour, sequential polling via grammY's built-in `bot.start()` instead of `@grammyjs/runner`, and Jest setup. `@Conversation()` has not been verified against grammY 2.0 yet.
+
 ## Quick start
 
 **1. Register a bot** with `TelegramModule.forRoot()`:
@@ -71,17 +100,17 @@ import { Injectable } from "@nestjs/common";
 export class BotHandlers {
   @Start({ description: "Start the bot" })
   async onStart(ctx: Context) {
-    await ctx.reply("Welcome to the bot!");
+    await ctx.send("Welcome to the bot!");
   }
 
   @Help({ description: "Show help" })
   async onHelp(ctx: Context) {
-    await ctx.reply("Available commands: /start, /help");
+    await ctx.send("Available commands: /start, /help");
   }
 
   @Command("secret", { description: "Admin only", isHidden: true })
   async onSecret(ctx: Context) {
-    await ctx.reply("Shh.");
+    await ctx.send("Shh.");
   }
 }
 ```
@@ -121,7 +150,7 @@ export class AppModule {}
 export class BetaHandlers {
   @Command("ping")
   async onPing(ctx: Context) {
-    await ctx.reply("pong from beta bot");
+    await ctx.send("pong from beta bot");
   }
 }
 ```
@@ -156,9 +185,9 @@ export class BotHandlers {
 
   @Conversation("collect")
   async collect(conversation: Conv<MyContext>, ctx: MyContext) {
-    await ctx.reply("What is your name?");
+    await ctx.send("What is your name?");
     const { message } = await conversation.waitFor("message:text");
-    await ctx.reply(`Hello, ${message.text}!`);
+    await ctx.send(`Hello, ${message.text}!`);
   }
 }
 ```
@@ -306,6 +335,7 @@ testing, provider overrides, raw update factories, and per-runner setup.
 
 - [`@mdreal/nestjs-grammy` docs](packages/nestjs-grammy/README.md) — core module reference
 - [`@mdreal/nestjs-grammy-testing` docs](packages/nestjs-grammy-testing/README.md) — testing guide
+- [Migration guide](MIGRATION.md) — moving from 1.x to the grammY 2.0 preview (`next`)
 - [`samples/simple-usage`](samples/simple-usage) — minimal working example app
 - [grammY documentation](https://grammy.dev/) — bot API & middleware
 - [NestJS documentation](https://docs.nestjs.com/) — framework fundamentals

@@ -15,6 +15,7 @@
  */
 
 export * from "./create-mock-api";
+export * from "./create-mock-api-middleware";
 export * from "./create-mock-api-transformer";
 export type * from "./mock-api-call";
 export type * from "./mock-api-function";

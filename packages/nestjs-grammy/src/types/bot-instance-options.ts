@@ -61,7 +61,7 @@ export interface BotInstanceOptions<TContext extends GrammyContext = GrammyConte
    *
    * @example
    * ```ts
-   * apiPlugins: [api => api.config.use(loggingPlugin)]
+   * apiPlugins: [api => api.transform(loggingPlugin)]
    * ```
    */
   readonly apiPlugins?: ((api: Api) => void)[];

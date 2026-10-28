@@ -29,7 +29,7 @@ import type { IncomingMessage, ServerResponse } from "node:http";
  *
  * @example
  * ```ts
- * const callback: HttpWebhookCallback = bot.webhookCallback("http");
+ * const callback: HttpWebhookCallback = webhookAdapters.http(bot);
  * http.createServer(callback).listen(3000);
  * ```
  */

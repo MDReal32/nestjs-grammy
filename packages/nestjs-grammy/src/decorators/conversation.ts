@@ -41,9 +41,9 @@ import { META_KEYS } from "./meta-keys";
  *
  *   @Conversation("collect")
  *   async collect(conversation: Conversation<MyContext>, ctx: MyContext) {
- *     await ctx.reply("What is your name?");
+ *     await ctx.send("What is your name?");
  *     const { message } = await conversation.waitFor("message:text");
- *     await ctx.reply(`Hello, ${message.text}!`);
+ *     await ctx.send(`Hello, ${message.text}!`);
  *   }
  * }
  * ```

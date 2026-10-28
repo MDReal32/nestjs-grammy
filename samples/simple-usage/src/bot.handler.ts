@@ -1,4 +1,5 @@
-import { Context, InlineKeyboard } from "grammy";
+import type { Context } from "grammy";
+import { InlineKeyboard } from "grammy/keyboard";
 
 import { KeyboardCallback, Start } from "@mdreal/nestjs-grammy";
 import { Injectable } from "@nestjs/common";
@@ -9,7 +10,7 @@ export class BotHandler {
   async start(ctx: Context) {
     const kb = new InlineKeyboard();
     kb.text("Click me!", "click");
-    await ctx.reply("Welcome to the bot! Click the button below.", { reply_markup: kb });
+    await ctx.send({ text: "Welcome to the bot! Click the button below.", reply_markup: kb });
   }
 
   @KeyboardCallback("click")

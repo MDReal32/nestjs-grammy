@@ -24,7 +24,7 @@ import type { TestChatOptions } from "../types";
  * @param options - Optional configuration for the operation.
  * @returns Returns the created value.
  */
-export const createTestChat = (options: TestChatOptions = {}): Chat.PrivateChat => ({
+export const createTestChat = (options: TestChatOptions = {}): Chat.Private => ({
   id: options.id ?? 1,
   type: "private",
   first_name: options.first_name ?? "Test",

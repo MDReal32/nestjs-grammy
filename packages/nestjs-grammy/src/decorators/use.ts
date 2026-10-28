@@ -32,7 +32,7 @@ import { META_KEYS } from "./meta-keys";
  *   @Command("secret")
  *   @Use(authMiddleware)
  *   async onSecret(ctx: Context) {
- *     await ctx.reply("This is protected");
+ *     await ctx.send("This is protected");
  *   }
  * }
  * ```
