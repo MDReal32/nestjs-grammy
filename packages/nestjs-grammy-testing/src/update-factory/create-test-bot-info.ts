@@ -36,5 +36,6 @@ export const createTestBotInfo = (options: TestBotInfoOptions = {}): UserFromGet
   can_manage_bots: options.can_manage_bots ?? false,
   allows_users_to_create_topics: options.allows_users_to_create_topics ?? false,
   has_topics_enabled: options.has_topics_enabled ?? false,
-  has_main_web_app: options.has_main_web_app ?? false
+  has_main_web_app: options.has_main_web_app ?? false,
+  supports_join_request_queries: options.supports_join_request_queries ?? false
 });
