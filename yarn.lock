@@ -1867,10 +1867,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grammyjs/types@npm:3.27.3":
-  version: 3.27.3
-  resolution: "@grammyjs/types@npm:3.27.3"
-  checksum: 10c0/d14008a8357fe29fb2f09da3973f470ee699dd3b5183e703668cbfbf1933bf2d3c65a79a33d6a023cd07111f7079a14dbc38be85f49e4ae0d02595651554cd5d
+"@grammyjs/types@npm:5.0.0":
+  version: 5.0.0
+  resolution: "@grammyjs/types@npm:5.0.0"
+  checksum: 10c0/235f473e9e2d2e1b0d41fa80ec125af79c6b7f27c2e19a0d52ba43c3231518d1fc1fc4f5200918356ba6aac695d36da030354db6fe8f4f9ef0cc7715125cde92
   languageName: node
   linkType: hard
 
@@ -2637,7 +2637,7 @@ __metadata:
     "@swc/helpers": "npm:^0.5.19"
     "@trivago/prettier-plugin-sort-imports": "npm:^5.2.2"
     "@types/node": "npm:^24.10.1"
-    grammy: "npm:^1.38.3"
+    grammy: "npm:^1.46.0"
     prettier: "npm:^3.6.2"
     prettier-plugin-packagejson: "npm:^2.5.19"
     rxjs: "npm:^7.8.1"
@@ -7456,15 +7456,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grammy@npm:^1.38.3":
-  version: 1.43.0
-  resolution: "grammy@npm:1.43.0"
+"grammy@npm:^1.46.0":
+  version: 1.46.0
+  resolution: "grammy@npm:1.46.0"
   dependencies:
-    "@grammyjs/types": "npm:3.27.3"
+    "@grammyjs/types": "npm:5.0.0"
     abort-controller: "npm:^3.0.0"
     debug: "npm:^4.4.3"
     node-fetch: "npm:^2.7.0"
-  checksum: 10c0/975a76cbe1da8a049c3ac407f1b59e1f49819954c0207f73ff45bd0b853a96b2aec809908c40185777a993fbd793a7baa94c9c42e438cadb69622e3bed4de00c
+  checksum: 10c0/38d78fa9cab044bce8a8093c276b908f01515c7cbb1602995242ec5d2e5b2cbd2ce28b01b58660e8570e45c40288ed913cc5080e537033a6b321b986717d120b
   languageName: node
   linkType: hard
 
