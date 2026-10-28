@@ -1,3 +1,7 @@
+## 2.0.0-next.1 (2026-10-28)
+
+This was a version bump only for @mdreal/nestjs-grammy to align it with other projects, there were no code changes.
+
 ## 1.1.5 (2026-10-28)
 
 ### 🚀 Features

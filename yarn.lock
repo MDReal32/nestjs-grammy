@@ -2531,7 +2531,7 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.4"
     vitest: "npm:~4.1.12"
   peerDependencies:
-    "@mdreal/nestjs-grammy": ^1.0.0
+    "@mdreal/nestjs-grammy": ^2.0.0-next.1
     "@nestjs/testing": ^10 || ^11
     "@playwright/test": ">=1.30"
     expect: ">=28"
