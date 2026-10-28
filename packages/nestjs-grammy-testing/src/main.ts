@@ -19,11 +19,11 @@
 //   import "@mdreal/nestjs-grammy-testing/jest";    // or /vitest, /bun, ...
 import "reflect-metadata";
 
-export * from "./mock-api";
 export type * from "./mock-api";
+export * from "./mock-api";
 export * from "./module";
 export * from "./registry";
-export * from "./testing-tokens";
 export * from "./tester";
-export * from "./update-factory";
+export * from "./testing-tokens";
 export type * from "./types";
+export * from "./update-factory";

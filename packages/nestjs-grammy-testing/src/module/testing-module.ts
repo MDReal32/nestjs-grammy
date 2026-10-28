@@ -15,20 +15,19 @@
  */
 import type { Bot, Context as GrammyContext } from "grammy";
 
-import { TG_BOT, TelegramModule } from "@mdreal/nestjs-grammy";
+import { TelegramModule, TG_BOT } from "@mdreal/nestjs-grammy";
 import type { DynamicModule, Provider } from "@nestjs/common";
 import { Module } from "@nestjs/common";
 
 import { createMockApi, createMockApiMiddleware, createMockApiTransformer } from "../mock-api";
 import { GrammyTestingRegistry } from "../registry";
-import { GrammyBotTester, createContextCaptureMiddleware, createTestingBotState } from "../tester";
+import { createContextCaptureMiddleware, createTestingBotState, GrammyBotTester } from "../tester";
 import { getGrammyBotTesterToken } from "../testing-tokens";
 import type { GrammyTestingBotOptions, GrammyTestingModuleOptions } from "../types";
 import { createTestBotInfo } from "../update-factory";
 
-interface NormalizedBotOptions<TContext extends GrammyContext = GrammyContext> extends Required<
-  Pick<GrammyTestingBotOptions<TContext>, "botName" | "token" | "registerBot">
-> {
+interface NormalizedBotOptions<TContext extends GrammyContext = GrammyContext>
+  extends Required<Pick<GrammyTestingBotOptions<TContext>, "botName" | "token" | "registerBot">> {
   readonly botInfo: NonNullable<GrammyTestingBotOptions<TContext>["botInfo"]>;
   readonly options: NonNullable<GrammyTestingBotOptions<TContext>["options"]>;
 }

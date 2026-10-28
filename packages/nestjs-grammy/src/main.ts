@@ -15,17 +15,11 @@
  */
 import "reflect-metadata";
 
-// Core module
-export * from "./module";
-
 // Handler decorators
 export * from "./decorators";
-
-// Injection decorators
+// Core module
+export * from "./module";
+// Injection decorators and tokens
 export * from "./tokens";
-
-// Injection tokens
-export * from "./tokens";
-
 // Public types
 export type * from "./types";

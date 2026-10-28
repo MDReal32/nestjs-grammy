@@ -5,5 +5,3 @@ declare global {
     interface Matchers<R> extends GrammyMatcherAssertions<R> {}
   }
 }
-
-export {};

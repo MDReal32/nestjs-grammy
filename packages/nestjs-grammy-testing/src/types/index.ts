@@ -30,6 +30,6 @@ export type * from "./send-update-result";
 export type * from "./sent-message-matching-options";
 export type * from "./test-bot-info-options";
 export type * from "./test-chat-options";
-export type * from "./testing-bot-state";
 export type * from "./test-user-options";
+export type * from "./testing-bot-state";
 export type * from "./text-matcher";
