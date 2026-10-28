@@ -3,11 +3,14 @@
 The `next` dist-tag (`2.0.0-next.*`) moves `@mdreal/nestjs-grammy` and `@mdreal/nestjs-grammy-testing` from grammY 1.x
 to grammY 2.0. grammY 2.0 is still in beta, so treat this line as a preview.
 
-This guide covers what changes for apps using these packages. For grammY's own API changes, also read the upstream
+This guide covers what changes for apps using these packages. [What changed in these packages](#what-changed-in-these-packages)
+lists the library's own changes; the sections after it walk through the migration, including the grammY API changes
+you will hit in handlers. For the full list of grammY changes, also read the upstream
 [grammY v1 → v2 migration notes](https://github.com/grammyjs/website/blob/docs/v2-migration-list/site/docs/guide/v2-migration.md).
 
 ## Contents
 
+- [What changed in these packages](#what-changed-in-these-packages)
 - [Requirements](#requirements)
 - [1. Install grammY 2.0 from JSR](#1-install-grammy-20-from-jsr)
 - [2. Update your handlers](#2-update-your-handlers)
@@ -17,15 +20,46 @@ This guide covers what changes for apps using these packages. For grammY's own A
 - [Known limitations](#known-limitations)
 - [Checklist](#checklist)
 
+## What changed in these packages
+
+Your decorators, scopes, injection helpers, module options and testing APIs keep their names and signatures. What
+changes is how the library runs underneath.
+
+### `@mdreal/nestjs-grammy`
+
+| Area               | 1.x                                                             | `next`                                                                                                   | Details                                  |
+| ------------------ | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| grammY dependency  | `grammy@^1` from npm                                            | `npm:@jsr/grammyjs__grammy@2.0.0-beta.8` from JSR                                                        | [Install](#1-install-grammy-20-from-jsr) |
+| Polling engine     | `@grammyjs/runner` (`run(bot)`)                                 | grammY's built-in `bot.start()`; `@grammyjs/runner` is no longer a dependency                            | [Polling](#4-polling-behaviour)          |
+| Update concurrency | concurrent, serialized per chat/user with `sequentialize`       | one update at a time across all chats                                                                    | [Polling](#4-polling-behaviour)          |
+| `polling` option   | accepted but not forwarded to the runner                        | forwarded to `bot.start()`, so `limit`, `timeout`, `allowed_updates`, `drop_pending_updates` take effect | [`polling`](#polling)                    |
+| `polling.onStart`  | ignored                                                         | called with `bot.me` before the module's `onStart`                                                       | [`polling`](#polling)                    |
+| Polling errors     | not routed to `onError`                                         | passed to `onError` if set, otherwise logged                                                             | [Polling](#4-polling-behaviour)          |
+| `apiPlugins`       | applied once to `bot.api`                                       | applied to `bot.api` at startup **and** to every update's `ctx.api`                                      | [`apiPlugins`](#apiplugins)              |
+| Webhook callback   | built with `webhookCallback(bot, "http")`                       | built with `webhookAdapters.http(bot)`; `@InjectWebhook()` is used the same way                          | [Options](#3-review-module-options)      |
+| Injected instances | `@InjectBot()` / `@InjectApi()` return grammY 1.x `Bot` / `Api` | return grammY 2.0 `Bot` / `Api`, so direct calls follow the grammY 2.0 API                               | [Handlers](#2-update-your-handlers)      |
+
+### `@mdreal/nestjs-grammy-testing`
+
+| Area             | 1.x                                          | `next`                                                                                    | Details                                   |
+| ---------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Peer dependency  | `@mdreal/nestjs-grammy@^1`                   | `@mdreal/nestjs-grammy@^2.0.0-next.0`                                                     | [Install](#1-install-grammy-20-from-jsr)  |
+| Mock API wiring  | transformer on `bot.api` only                | transformer on `bot.api` plus a middleware that mocks each update's `ctx.api`             | [Custom mock wiring](#custom-mock-wiring) |
+| New export       | –                                            | `createMockApiMiddleware(mockApi)`                                                        | [Custom mock wiring](#custom-mock-wiring) |
+| Mock transformer | registered with `api.config.use(...)`        | registered with `api.transform(...)`, using the `(prev, data, signal)` signature          | [Custom mock wiring](#custom-mock-wiring) |
+| Bot info         | set through `bot.botInfo`                    | set through `bot.me`; `createTestBotInfo()` also fills `supports_guest_queries` (`false`) | [Fixtures](#fixtures)                     |
+| Chat fixtures    | `TestChatOptions` extends `Chat.PrivateChat` | `TestChatOptions` extends `Chat.Private`; `createTestChat()` returns `Chat.Private`       | [Fixtures](#fixtures)                     |
+| Jest             | works as is                                  | needs a transform for ESM-only grammY                                                     | [Jest](#jest)                             |
+
 ## Requirements
 
-| Requirement | 1.x                | `next`                                                                      |
-| ----------- | ------------------ | --------------------------------------------------------------------------- |
-| grammY      | `^1` from npm      | `2.0.0-beta.8` from JSR (`npm:@jsr/grammyjs__grammy@2.0.0-beta.8`)          |
-| Node.js     | `>=22`             | `>=22`; CommonJS apps need `>=22.12` (or `>=20.19`) to `require` ESM grammY |
-| Module type | CommonJS or ESM    | CommonJS or ESM; grammY itself is **ESM only**                              |
-| NestJS      | `^10 \|\| ^11`     | unchanged                                                                   |
-| Runner      | `@grammyjs/runner` | removed; grammY's built-in `bot.start()` is used                            |
+| Requirement | 1.x                | `next`                                                             |
+| ----------- | ------------------ | ------------------------------------------------------------------ |
+| grammY      | `^1` from npm      | `2.0.0-beta.8` from JSR (`npm:@jsr/grammyjs__grammy@2.0.0-beta.8`) |
+| Node.js     | `>=22`             | `>=22`; CommonJS apps need `>=22.12` to `require` ESM grammY       |
+| Module type | CommonJS or ESM    | CommonJS or ESM; grammY itself is **ESM only**                     |
+| NestJS      | `^10 \|\| ^11`     | unchanged                                                          |
+| Runner      | `@grammyjs/runner` | removed; grammY's built-in `bot.start()` is used                   |
 
 ## 1. Install grammY 2.0 from JSR
 
