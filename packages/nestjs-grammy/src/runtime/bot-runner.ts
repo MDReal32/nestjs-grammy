@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Bot, type Context as GrammyContext, webhookCallback } from "grammy";
-
-import { run, sequentialize } from "@grammyjs/runner";
+import { Bot, type Context as GrammyContext } from "grammy";
+import { webhookAdapters } from "grammy/webhook";
 
 import { makeLogger } from "../logging/logger";
 import { makeRateLimit } from "../rate-limit/make-rate-limit";
@@ -120,8 +119,19 @@ export class TelegramBotRunner<C extends GrammyContext = GrammyContext> {
     this.bot = new Bot<C>(this.opts.token);
 
     // Apply API plugins
-    for (const plug of this.opts.apiPlugins ?? []) {
+    const apiPlugins = this.opts.apiPlugins ?? [];
+    for (const plug of apiPlugins) {
       plug(this.bot.api);
+    }
+
+    // grammY v2 creates a fresh `ctx.api` per update, so plugins must be applied to it too
+    if (apiPlugins.length > 0) {
+      this.bot.use(async (ctx, next) => {
+        for (const plug of apiPlugins) {
+          plug(ctx.api);
+        }
+        await next();
+      });
     }
 
     // Apply rate limiter first, then user middlewares
@@ -148,22 +158,29 @@ export class TelegramBotRunner<C extends GrammyContext = GrammyContext> {
 
   /** Start the bot in long-polling mode. */
   private startPolling() {
-    this.bot.use(
-      sequentialize(ctx => {
-        const chat = ctx.chat?.id.toString();
-        const user = ctx.from?.id.toString();
-        return [chat, user].filter(con => con !== undefined);
+    // grammY v2 handles polled updates one at a time, so no extra sequentialization is needed.
+    // Not awaited: `bot.start()` only resolves once polling stops.
+    this.bot
+      .start({
+        ...this.opts.polling,
+        onStart: async me => {
+          await this.opts.polling?.onStart?.(me);
+          this.opts.onStart?.({ name: this.opts.name, mode: "polling" });
+          this.logger.log("Polling started");
+        }
       })
-    );
-
-    run(this.bot);
-    this.opts.onStart?.({ name: this.opts.name, mode: "polling" });
-    this.logger.log("Polling started");
+      .catch(err => {
+        if (this.opts.onError) {
+          return this.opts.onError(err);
+        }
+        const error = err instanceof Error ? err : undefined;
+        this.logger.error(error?.message ?? "Polling failed", error?.stack);
+      });
   }
 
   /** Prepare the bot in webhook mode (setWebhook + callback). */
   private async prepareWebhook() {
-    this.callback = webhookCallback(this.bot, "http");
+    this.callback = webhookAdapters.http(this.bot);
 
     const url = this.opts.webhook?.url;
     if (url) {

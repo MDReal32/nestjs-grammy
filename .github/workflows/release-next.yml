@@ -79,10 +79,18 @@ jobs:
             fi
           fi
           echo "release=true" >> "$GITHUB_OUTPUT"
+          # The next channel tracks the next major: open it with a premajor, then continue the prerelease line.
+          stable=$(git tag --list "@mdreal/nestjs-grammy@*" | sed 's/.*@//' | grep -vE -- '-' | sort -V | tail -n1 || true)
+          pre=$(git tag --merged HEAD --list "@mdreal/nestjs-grammy@*-next.*" | sed 's/.*@//' | sort -V | tail -n1 || true)
+          if [ -n "$pre" ] && [ "${pre%%.*}" -gt "${stable%%.*}" ]; then
+            echo "specifier=prerelease" >> "$GITHUB_OUTPUT"
+          else
+            echo "specifier=premajor" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Version prerelease (version, changelog, tag)
         if: steps.changes.outputs.release == 'true'
-        run: yarn nx release prerelease --preid next --skip-publish
+        run: yarn nx release ${{ steps.changes.outputs.specifier }} --preid next --skip-publish
 
       - name: Publish to the next dist-tag
         if: steps.changes.outputs.release == 'true'

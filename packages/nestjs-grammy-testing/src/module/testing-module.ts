@@ -19,7 +19,7 @@ import { TG_BOT, TelegramModule } from "@mdreal/nestjs-grammy";
 import type { DynamicModule, Provider } from "@nestjs/common";
 import { Module } from "@nestjs/common";
 
-import { createMockApi, createMockApiTransformer } from "../mock-api";
+import { createMockApi, createMockApiMiddleware, createMockApiTransformer } from "../mock-api";
 import { GrammyTestingRegistry } from "../registry";
 import { GrammyBotTester, createContextCaptureMiddleware, createTestingBotState } from "../tester";
 import { getGrammyBotTesterToken } from "../testing-tokens";
@@ -94,7 +94,7 @@ export class GrammyTestingModule {
             name: bot.botName,
             token: bot.token,
             mode: "webhook",
-            apiPlugins: [api => api.config.use(createMockApiTransformer(mockApi)), ...apiPlugins],
+            apiPlugins: [api => api.transform(createMockApiTransformer(mockApi)), ...apiPlugins],
             middlewares: [createContextCaptureMiddleware(state), ...middlewares],
             onError: error => {
               state.errors.push(error);
@@ -109,7 +109,8 @@ export class GrammyTestingModule {
         inject: [TG_BOT(bot.botName)],
         useFactory: (registeredBot: Bot<TContext>) => {
           if (!bot.registerBot) {
-            registeredBot.api.config.use(createMockApiTransformer(mockApi));
+            registeredBot.api.transform(createMockApiTransformer(mockApi));
+            registeredBot.use(createMockApiMiddleware(mockApi));
             registeredBot.use(createContextCaptureMiddleware(state));
           }
 

@@ -17,7 +17,7 @@ import type { Bot, Context as GrammyContext } from "grammy";
 
 import { TG_BOT } from "@mdreal/nestjs-grammy";
 
-import { createMockApi, createMockApiTransformer } from "../mock-api";
+import { createMockApi, createMockApiMiddleware, createMockApiTransformer } from "../mock-api";
 import type { GrammyTestingAttachOptions, NestCompiledModule } from "../types";
 import { createTestBotInfo } from "../update-factory";
 import { GrammyBotTester } from "./bot-tester";
@@ -43,10 +43,11 @@ export const createGrammyTester = async <TContext extends GrammyContext = Grammy
   const mockApi = createMockApi(botInfo);
 
   if (!bot.isInited()) {
-    bot.botInfo = botInfo;
+    bot.me = botInfo;
   }
 
-  bot.api.config.use(createMockApiTransformer(mockApi));
+  bot.api.transform(createMockApiTransformer(mockApi));
+  bot.use(createMockApiMiddleware(mockApi));
   bot.use(createContextCaptureMiddleware(state));
 
   if (options.init !== false) {

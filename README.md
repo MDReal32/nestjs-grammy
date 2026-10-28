@@ -35,6 +35,28 @@ npm install @nestjs/common @nestjs/core reflect-metadata
 
 > Any package manager works (npm, yarn, pnpm, bun) — swap `npm install` for your tool of choice.
 
+### grammY 2.0 preview (`next`)
+
+The `next` dist-tag tracks grammY 2.0, which is in beta and published **only on [JSR](https://jsr.io/@grammyjs/grammy)**. Point the `@jsr` scope at JSR's npm registry, then install the preview together with the same grammY build:
+
+```ini
+# .npmrc (npm, pnpm, bun)
+@jsr:registry=https://npm.jsr.io
+```
+
+```yaml
+# .yarnrc.yml (yarn)
+npmScopes:
+  jsr:
+    npmRegistryServer: "https://npm.jsr.io"
+```
+
+```bash
+npm install @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+```
+
+Installing `grammy` under the same alias keeps a single grammY copy, so `import { Context } from "grammy"` in your app resolves to v2. Migrate your handlers with the [grammY v1 → v2 notes](https://github.com/grammyjs/website/blob/docs/v2-migration-list/site/docs/guide/v2-migration.md) (for example `ctx.reply` → `ctx.send`). Polling uses grammY's built-in `bot.start()` instead of `@grammyjs/runner`, and `@Conversation()` has not been verified against grammY 2.0 yet.
+
 ## Quick start
 
 **1. Register a bot** with `TelegramModule.forRoot()`:
@@ -71,17 +93,17 @@ import { Injectable } from "@nestjs/common";
 export class BotHandlers {
   @Start({ description: "Start the bot" })
   async onStart(ctx: Context) {
-    await ctx.reply("Welcome to the bot!");
+    await ctx.send("Welcome to the bot!");
   }
 
   @Help({ description: "Show help" })
   async onHelp(ctx: Context) {
-    await ctx.reply("Available commands: /start, /help");
+    await ctx.send("Available commands: /start, /help");
   }
 
   @Command("secret", { description: "Admin only", isHidden: true })
   async onSecret(ctx: Context) {
-    await ctx.reply("Shh.");
+    await ctx.send("Shh.");
   }
 }
 ```
@@ -121,7 +143,7 @@ export class AppModule {}
 export class BetaHandlers {
   @Command("ping")
   async onPing(ctx: Context) {
-    await ctx.reply("pong from beta bot");
+    await ctx.send("pong from beta bot");
   }
 }
 ```
@@ -156,9 +178,9 @@ export class BotHandlers {
 
   @Conversation("collect")
   async collect(conversation: Conv<MyContext>, ctx: MyContext) {
-    await ctx.reply("What is your name?");
+    await ctx.send("What is your name?");
     const { message } = await conversation.waitFor("message:text");
-    await ctx.reply(`Hello, ${message.text}!`);
+    await ctx.send(`Hello, ${message.text}!`);
   }
 }
 ```

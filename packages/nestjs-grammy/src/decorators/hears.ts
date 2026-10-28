@@ -28,12 +28,12 @@ import { META_KEYS } from "./meta-keys";
  * export class BotHandlers {
  *   @Hears("hello")
  *   async onHello(ctx: Context) {
- *     await ctx.reply("Hi there!");
+ *     await ctx.send("Hi there!");
  *   }
  *
  *   @Hears(/bye/i)
  *   async onBye(ctx: Context) {
- *     await ctx.reply("Goodbye!");
+ *     await ctx.send("Goodbye!");
  *   }
  * }
  * ```

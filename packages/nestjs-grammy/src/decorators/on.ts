@@ -30,7 +30,7 @@ import { META_KEYS } from "./meta-keys";
  * export class BotHandlers {
  *   @On("message:text")
  *   async onText(ctx: Context) {
- *     await ctx.reply(`You said: ${ctx.message.text}`);
+ *     await ctx.send(`You said: ${ctx.message.text}`);
  *   }
  *
  *   @On("callback_query:data")

@@ -27,7 +27,7 @@ import { META_KEYS } from "./meta-keys";
  * export class BotHandlers {
  *   @Command("start", { description: "Start the bot" })
  *   async onStart(ctx: Context) {
- *     await ctx.reply("Hello!");
+ *     await ctx.send("Hello!");
  *   }
  * }
  * ```

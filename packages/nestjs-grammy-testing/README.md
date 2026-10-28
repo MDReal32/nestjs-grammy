@@ -23,6 +23,13 @@ Required peers:
 pnpm add @mdreal/nestjs-grammy grammy @nestjs/common @nestjs/core reflect-metadata
 ```
 
+For the grammY 2.0 preview, install both packages from the `next` dist-tag and grammY from JSR (see the [`@mdreal/nestjs-grammy` README](../nestjs-grammy/README.md) for the registry setup):
+
+```bash
+pnpm add -D @mdreal/nestjs-grammy-testing@next
+pnpm add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+```
+
 ## Usage modes
 
 This package supports two testing modes.
@@ -46,7 +53,7 @@ import { Test } from "@nestjs/testing";
 class BotHandlers {
   @Command("start")
   async onStart(ctx: Context) {
-    await ctx.reply("Hello");
+    await ctx.send("Hello");
   }
 }
 
@@ -85,7 +92,7 @@ import { Hears } from "@mdreal/nestjs-grammy";
 class BotHandlers {
   @Hears("ping")
   async onPing(ctx: Context) {
-    await ctx.reply("pong");
+    await ctx.send("pong");
   }
 }
 
@@ -132,7 +139,7 @@ class BotHandlers {
 
   @Command("start")
   async onStart(ctx: Context) {
-    await ctx.reply(this.greeting.getGreeting());
+    await ctx.send(this.greeting.getGreeting());
   }
 }
 ```
@@ -260,6 +267,20 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: { setupFiles: ["./vitest.setup.ts"] }
 });
+```
+
+Jest with grammY 2.0: grammY v2 ships ESM only, which Jest's CommonJS loader cannot `require`. Let `ts-jest` compile it (and its `@jsr` dependencies) to CommonJS:
+
+```js
+// jest.config.js
+module.exports = {
+  transform: {
+    "/node_modules/.+\\.js$": ["ts-jest", { tsconfig: { allowJs: true, module: "commonjs", target: "es2022" } }],
+    "^.+\\.ts$": "ts-jest"
+  },
+  transformIgnorePatterns: ["/node_modules/(?!(grammy|@jsr)/)"],
+  setupFilesAfterEnv: ["@mdreal/nestjs-grammy-testing/jest"]
+};
 ```
 
 Each entry also re-exports `registerGrammyMatchers`, `grammyMatchers`, and the

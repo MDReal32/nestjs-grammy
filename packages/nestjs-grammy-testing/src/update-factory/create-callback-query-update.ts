@@ -37,7 +37,7 @@ export const createCallbackQueryUpdate = (options: CallbackQueryUpdateOptions = 
     last_name: options.chat?.last_name ?? from.last_name
   });
 
-  const message: Message.TextMessage = {
+  const message: Message & { text: string } = {
     message_id: options.messageId ?? 1,
     date: options.date ?? now(),
     chat,
