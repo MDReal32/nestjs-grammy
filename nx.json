@@ -40,7 +40,8 @@
     "projectsRelationship": "independent",
     "releaseTagPattern": "{projectName}@{version}",
     "version": {
-      "conventionalCommits": true
+      "conventionalCommits": true,
+      "preserveMatchingDependencyRanges": ["dependencies", "devDependencies", "optionalDependencies"]
     },
     "changelog": {
       "projectChangelogs": true
