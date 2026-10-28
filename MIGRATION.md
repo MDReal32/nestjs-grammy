@@ -46,8 +46,21 @@ npmScopes:
 Then install the preview, aliasing `grammy` to the same JSR build the library uses:
 
 ```bash
+# npm
 npm install @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
 npm install -D @mdreal/nestjs-grammy-testing@next
+
+# yarn
+yarn add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+yarn add -D @mdreal/nestjs-grammy-testing@next
+
+# pnpm
+pnpm add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+pnpm add -D @mdreal/nestjs-grammy-testing@next
+
+# bun
+bun add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+bun add -D @mdreal/nestjs-grammy-testing@next
 ```
 
 Keeping the alias name `grammy` matters: `import { Context } from "grammy"` in your app must resolve to the **same**

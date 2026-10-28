@@ -56,7 +56,14 @@ pnpm add @nestjs/common @nestjs/core reflect-metadata
 The `next` dist-tag tracks grammY 2.0, which is in beta and published **only on [JSR](https://jsr.io/@grammyjs/grammy)**. Add `@jsr:registry=https://npm.jsr.io` to your `.npmrc` (for yarn: `npmScopes.jsr.npmRegistryServer` in `.yarnrc.yml`), then install the preview with the same grammY build:
 
 ```bash
+# npm
+npm install @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+# yarn
+yarn add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+# pnpm
 pnpm add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+# bun
+bun add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
 ```
 
 Coming from 1.x? Follow the **[migration guide](https://github.com/MDReal32/nestjs-grammy/blob/next/MIGRATION.md)** (for example `ctx.reply` → `ctx.send`, `apiPlugins` now running per update, and Jest setup). Polling uses grammY's built-in `bot.start()` instead of `@grammyjs/runner`, and `@Conversation()` has not been verified against grammY 2.0 yet.

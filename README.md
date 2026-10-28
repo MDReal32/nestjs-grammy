@@ -52,7 +52,14 @@ npmScopes:
 ```
 
 ```bash
+# npm
 npm install @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+# yarn
+yarn add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+# pnpm
+pnpm add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+# bun
+bun add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
 ```
 
 Installing `grammy` under the same alias keeps a single grammY copy, so `import { Context } from "grammy"` in your app resolves to v2. Coming from 1.x? Follow the **[migration guide](MIGRATION.md)**: handler changes (for example `ctx.reply` → `ctx.send`), `apiPlugins` and `polling` behaviour, sequential polling via grammY's built-in `bot.start()` instead of `@grammyjs/runner`, and Jest setup. `@Conversation()` has not been verified against grammY 2.0 yet.

@@ -26,8 +26,21 @@ pnpm add @mdreal/nestjs-grammy grammy @nestjs/common @nestjs/core reflect-metada
 For the grammY 2.0 preview, install both packages from the `next` dist-tag and grammY from JSR (see the [migration guide](https://github.com/MDReal32/nestjs-grammy/blob/next/MIGRATION.md) for the registry setup and test changes):
 
 ```bash
+# npm
+npm install -D @mdreal/nestjs-grammy-testing@next
+npm install @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+
+# yarn
+yarn add -D @mdreal/nestjs-grammy-testing@next
+yarn add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+
+# pnpm
 pnpm add -D @mdreal/nestjs-grammy-testing@next
 pnpm add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
+
+# bun
+bun add -D @mdreal/nestjs-grammy-testing@next
+bun add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
 ```
 
 ## Usage modes
