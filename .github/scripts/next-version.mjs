@@ -1,7 +1,8 @@
 // Resolves the version for the next prerelease from what is actually published, not from package.json on disk.
 //
-// 1. Backfills git tags for `-next.N` versions that are on npm but missing in git (a run that published but never
-//    pushed), using the source commit from each version's provenance attestation.
+// 1. Backfills git tags for `-next.N` versions that are on npm but missing in git: on the release commit that set the
+//    version when it is on this branch, otherwise on the source commit from the version's provenance attestation
+//    (a run that published but never pushed its release commit).
 // 2. Picks the highest `-next.N` above the latest stable major across npm and git, and bumps N;
 //    with none, opens the line at `<stable major + 1>.0.0-next.0`.
 //
@@ -35,7 +36,7 @@ const compare = (a, b) =>
 const max = versions => versions.reduce((top, v) => (top && compare(top, v) >= 0 ? top : v), undefined);
 
 const packages = readdirSync("packages")
-  .map(dir => JSON.parse(readFileSync(`packages/${dir}/package.json`, "utf8")))
+  .map(dir => ({ dir, ...JSON.parse(readFileSync(`packages/${dir}/package.json`, "utf8")) }))
   .filter(pkg => !pkg.private);
 
 const registry = "https://registry.npmjs.org";
@@ -60,10 +61,23 @@ const provenanceCommit = async (name, version) => {
   return undefined;
 };
 
+/** First commit on this branch whose manifest sets `version`, i.e. its release commit. */
+const releaseCommit = (dir, version) =>
+  git(
+    "log",
+    "--reverse",
+    "--format=%H",
+    "-G",
+    `"version": "${version.replace(/[.+]/g, "\\$&")}"`,
+    "HEAD",
+    "--",
+    `packages/${dir}/package.json`
+  ).split("\n")[0] || undefined;
+
 const candidates = [];
 const backfilled = [];
 
-for (const { name } of packages) {
+for (const { dir, name } of packages) {
   const doc = await fetchJson(`${registry}/${encode(name)}`);
   const published = Object.keys(doc?.versions ?? {})
     .map(parse)
@@ -78,7 +92,7 @@ for (const { name } of packages) {
   for (const v of published) {
     if (v.preid !== PREID || taggedVersions.has(v.version)) continue;
     const tag = `${name}@${v.version}`;
-    const commit = await provenanceCommit(name, v.version);
+    const commit = releaseCommit(dir, v.version) ?? (await provenanceCommit(name, v.version));
     if (!commit || !tryGit("merge-base", "--is-ancestor", commit, "HEAD")) {
       console.log(`::warning::${tag} is on npm but its source commit is not on this branch; not tagging it`);
       continue;

@@ -39,6 +39,9 @@ jobs:
         with:
           ref: next
           fetch-depth: 0
+          # GITHUB_TOKEN cannot create tags while next's workflows differ from master's (no `workflows` permission).
+          # Optional RELEASE_TOKEN: a PAT with contents + workflows write, so release tags reach GitHub too.
+          token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
       - name: Enable Corepack
         run: corepack enable
@@ -73,7 +76,8 @@ jobs:
 
       - name: Push backfilled tags
         if: steps.resolve.outputs.backfilled != ''
-        run: git push origin $TAGS
+        # Best effort: versions are resolved from npm, and the tags are backfilled again on the next run.
+        run: git push origin $TAGS || echo "::warning::Could not push tags $TAGS; set a RELEASE_TOKEN secret to push them"
         env:
           TAGS: ${{ steps.resolve.outputs.backfilled }}
 
@@ -84,7 +88,7 @@ jobs:
           # Latest tag on this branch, stable or prerelease; "-" suffix sorts 1.2.3-next.N before 1.2.3.
           last_tag=$(git -c versionsort.suffix=- tag --merged HEAD --list "@mdreal/nestjs-grammy@*" --sort=-v:refname | head -n1 || true)
           if [ -n "$last_tag" ]; then
-            changed=$(git diff --name-only "$last_tag" HEAD -- packages/ | grep -E 'packages/[^/]+/(src/|package.json)' || true)
+            changed=$(git diff --name-only "$last_tag" HEAD -- packages/ | grep -E 'packages/[^/]+/(src/|package\.json)' || true)
             if [ -z "$changed" ]; then
               echo "::notice::No package src/package.json changes since $last_tag — skipping release"
               echo "release=false" >> "$GITHUB_OUTPUT"
@@ -136,6 +140,6 @@ jobs:
             for tag in $tags; do git tag --force --annotate "$tag" --message "$tag" HEAD; done
             git push origin HEAD:next
           fi
-          git push origin $tags
+          git push origin $tags || echo "::warning::Could not push tags; set a RELEASE_TOKEN secret to push them"
         env:
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
