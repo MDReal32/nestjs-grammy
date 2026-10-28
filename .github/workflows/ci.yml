@@ -74,7 +74,8 @@ jobs:
             exit 0
           fi
           git fetch --tags --quiet origin || true
-          last_tag=$(git tag --list "@mdreal/nestjs-grammy@*" --sort=-v:refname | head -n1)
+          # Ignore prerelease tags from the next channel; compare against the last stable release.
+          last_tag=$(git tag --list "@mdreal/nestjs-grammy@*" --sort=-v:refname | grep -vE '@[0-9]+\.[0-9]+\.[0-9]+-' | head -n1 || true)
           if [ -n "$last_tag" ]; then
             changed=$(git diff --name-only "$last_tag" HEAD -- packages/ | grep -E 'packages/[^/]+/(src/|package\.json)' || true)
             if [ -z "$changed" ]; then

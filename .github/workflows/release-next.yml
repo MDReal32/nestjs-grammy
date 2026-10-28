@@ -1,0 +1,95 @@
+name: Release next
+
+on:
+  push:
+    branches: [next]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build, typecheck, lint
+        run: yarn nx run-many -t build typecheck lint
+
+  release:
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: next
+          fetch-depth: 0
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: yarn
+          registry-url: https://registry.npmjs.org
+
+      - name: Upgrade npm for OIDC trusted publishing
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build packages
+        run: yarn nx run-many -t build
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Check for package changes
+        id: changes
+        run: |
+          set -eo pipefail
+          git fetch --tags --quiet origin || true
+          # Latest tag on this branch, stable or prerelease; "-" suffix sorts 1.2.3-next.N before 1.2.3.
+          last_tag=$(git -c versionsort.suffix=- tag --merged HEAD --list "@mdreal/nestjs-grammy@*" --sort=-v:refname | head -n1 || true)
+          if [ -n "$last_tag" ]; then
+            changed=$(git diff --name-only "$last_tag" HEAD -- packages/ | grep -E 'packages/[^/]+/(src/|package\.json)' || true)
+            if [ -z "$changed" ]; then
+              echo "::notice::No package src/package.json changes since $last_tag — skipping release"
+              echo "release=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+          echo "release=true" >> "$GITHUB_OUTPUT"
+
+      - name: Version prerelease (version, changelog, tag)
+        if: steps.changes.outputs.release == 'true'
+        run: yarn nx release prerelease --preid next --skip-publish
+
+      - name: Publish to the next dist-tag
+        if: steps.changes.outputs.release == 'true'
+        run: yarn nx release publish --tag next
+        env:
+          NPM_CONFIG_PROVENANCE: "true"
+
+      - name: Push release commit and tags
+        if: steps.changes.outputs.release == 'true'
+        run: git push --follow-tags origin next
