@@ -182,9 +182,9 @@ export class TelegramBotRunner<C extends GrammyContext = GrammyContext> {
   private async prepareWebhook() {
     this.callback = webhookAdapters.http(this.bot);
 
-    const url = this.opts.webhook?.url;
-    if (url) {
-      const { url: _url, ...rest } = this.opts.webhook!;
+    const webhook = this.opts.webhook;
+    if (webhook?.url) {
+      const { url, ...rest } = webhook;
       await this.bot.api.setWebhook(url, rest);
     }
 

@@ -8,27 +8,20 @@
   ],
   "scripts": {
     "build": "nx run-many -t build",
-    "format": "prettier --write .",
-    "lint": "prettier --check .",
+    "format": "biome check --write",
+    "lint": "biome check",
     "test": "nx run-many -t test:jest",
     "typecheck": "nx run-many -t typecheck"
   },
-  "dependencies": {
-    "eslint": "^10.4.1",
-    "typescript-eslint": "^8.60.0"
-  },
   "devDependencies": {
-    "@nx/eslint": "22.7.5",
+    "@biomejs/biome": "2.6.3",
     "@nx/vite": "22.7.5",
     "@nx/web": "22.7.5",
-    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@vitest/ui": "~4.1.7",
     "jiti": "2.7.0",
-    "nx": "22.7.5",
-    "prettier": "^3.8.3",
-    "prettier-plugin-packagejson": "^3.0.2",
-    "vite": "^8.0.15",
-    "vitest": "~4.1.7"
+    "nx": "22.7.12",
+    "vite": "^8.3.5",
+    "vitest": "~4.1.12"
   },
   "packageManager": "yarn@4.15.0",
   "engines": {

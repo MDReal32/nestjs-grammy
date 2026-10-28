@@ -15,7 +15,7 @@
  */
 import { Logger } from "@nestjs/common";
 
-import type { LogLevel, LoggingOptions } from "../types";
+import type { LoggingOptions, LogLevel } from "../types";
 
 /**
  * `makeLogger`

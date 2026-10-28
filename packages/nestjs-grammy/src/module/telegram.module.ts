@@ -21,7 +21,7 @@ import { DiscoveryModule } from "@nestjs/core";
 import { TelegramDecoratorsBinder } from "../binder";
 import { type BotEntry, TelegramBotsRegistry } from "../registry";
 import { TelegramBotRunner } from "../runtime";
-import { TG_API, TG_BOT, TG_OPTIONS, TG_WEBHOOK_CALLBACK, makeToken } from "../tokens";
+import { makeToken, TG_API, TG_BOT, TG_OPTIONS, TG_WEBHOOK_CALLBACK } from "../tokens";
 import type { BotInstanceOptions, InjectInstances, TelegramModuleAsyncOptions } from "../types";
 import { RegistryModule } from "./registry.module";
 

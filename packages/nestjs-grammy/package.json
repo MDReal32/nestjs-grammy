@@ -42,7 +42,7 @@
   ],
   "scripts": {
     "build": "vite build",
-    "lint": "prettier --check \"src/**/*.ts\" \"*.{cjs,json,ts}\" \"README.md\"",
+    "lint": "biome check",
     "prepack": "vite build",
     "typecheck": "tsc --noEmit"
   },
@@ -54,13 +54,10 @@
   "devDependencies": {
     "@grammyjs/conversations": "^2.1.1",
     "@swc/core": "^1.15.18",
-    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/node": "^24.10.1",
-    "prettier": "^3.6.2",
-    "prettier-plugin-packagejson": "^2.5.19",
     "typescript": "^5.8.3",
     "unplugin-swc": "^1.5.9",
-    "vite": "^8.0.15",
+    "vite": "^8.3.5",
     "vite-plugin-dts": "^4.5.4"
   },
   "peerDependencies": {

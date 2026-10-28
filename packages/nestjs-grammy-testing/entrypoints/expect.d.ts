@@ -4,5 +4,3 @@ declare module "expect" {
   interface Matchers<R, T = unknown> extends GrammyMatcherAssertions<R> {}
   interface AsymmetricMatchers extends GrammyMatcherAssertions<void> {}
 }
-
-export {};

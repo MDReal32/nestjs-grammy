@@ -299,7 +299,8 @@ export class TelegramDecoratorsBinder implements OnApplicationBootstrap {
     botName: string,
     commands: CommandMeta[]
   ) {
-    (commandsByBot[botName] ??= []).push(
+    commandsByBot[botName] ??= [];
+    commandsByBot[botName].push(
       ...commands
         .filter(command => !command.isHidden)
         .map(command => ({
