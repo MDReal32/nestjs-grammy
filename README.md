@@ -55,7 +55,7 @@ npmScopes:
 npm install @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
 ```
 
-Installing `grammy` under the same alias keeps a single grammY copy, so `import { Context } from "grammy"` in your app resolves to v2. Migrate your handlers with the [grammY v1 → v2 notes](https://github.com/grammyjs/website/blob/docs/v2-migration-list/site/docs/guide/v2-migration.md) (for example `ctx.reply` → `ctx.send`). Polling uses grammY's built-in `bot.start()` instead of `@grammyjs/runner`, and `@Conversation()` has not been verified against grammY 2.0 yet.
+Installing `grammy` under the same alias keeps a single grammY copy, so `import { Context } from "grammy"` in your app resolves to v2. Coming from 1.x? Follow the **[migration guide](MIGRATION.md)**: handler changes (for example `ctx.reply` → `ctx.send`), `apiPlugins` and `polling` behaviour, sequential polling via grammY's built-in `bot.start()` instead of `@grammyjs/runner`, and Jest setup. `@Conversation()` has not been verified against grammY 2.0 yet.
 
 ## Quick start
 
@@ -328,6 +328,7 @@ testing, provider overrides, raw update factories, and per-runner setup.
 
 - [`@mdreal/nestjs-grammy` docs](packages/nestjs-grammy/README.md) — core module reference
 - [`@mdreal/nestjs-grammy-testing` docs](packages/nestjs-grammy-testing/README.md) — testing guide
+- [Migration guide](MIGRATION.md) — moving from 1.x to the grammY 2.0 preview (`next`)
 - [`samples/simple-usage`](samples/simple-usage) — minimal working example app
 - [grammY documentation](https://grammy.dev/) — bot API & middleware
 - [NestJS documentation](https://docs.nestjs.com/) — framework fundamentals

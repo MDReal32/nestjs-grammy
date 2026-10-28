@@ -59,7 +59,7 @@ The `next` dist-tag tracks grammY 2.0, which is in beta and published **only on 
 pnpm add @mdreal/nestjs-grammy@next grammy@npm:@jsr/grammyjs__grammy@2.0.0-beta.8
 ```
 
-Migrate your handlers with the [grammY v1 → v2 notes](https://github.com/grammyjs/website/blob/docs/v2-migration-list/site/docs/guide/v2-migration.md) (for example `ctx.reply` → `ctx.send`). Polling uses grammY's built-in `bot.start()` instead of `@grammyjs/runner`, and `@Conversation()` has not been verified against grammY 2.0 yet.
+Coming from 1.x? Follow the **[migration guide](https://github.com/MDReal32/nestjs-grammy/blob/next/MIGRATION.md)** (for example `ctx.reply` → `ctx.send`, `apiPlugins` now running per update, and Jest setup). Polling uses grammY's built-in `bot.start()` instead of `@grammyjs/runner`, and `@Conversation()` has not been verified against grammY 2.0 yet.
 
 ---
 

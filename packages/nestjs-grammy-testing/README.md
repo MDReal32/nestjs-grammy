@@ -23,7 +23,7 @@ Required peers:
 pnpm add @mdreal/nestjs-grammy grammy @nestjs/common @nestjs/core reflect-metadata
 ```
 
-For the grammY 2.0 preview, install both packages from the `next` dist-tag and grammY from JSR (see the [`@mdreal/nestjs-grammy` README](../nestjs-grammy/README.md) for the registry setup):
+For the grammY 2.0 preview, install both packages from the `next` dist-tag and grammY from JSR (see the [migration guide](https://github.com/MDReal32/nestjs-grammy/blob/next/MIGRATION.md) for the registry setup and test changes):
 
 ```bash
 pnpm add -D @mdreal/nestjs-grammy-testing@next
