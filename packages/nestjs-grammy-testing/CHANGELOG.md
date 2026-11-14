@@ -1,3 +1,17 @@
+## 1.1.6 (2026-11-14)
+
+### 🚀 Features
+
+- support NestJS 12 and upgrade dependencies to latest ([13001a7](https://github.com/MDReal32/nestjs-grammy/commit/13001a7))
+
+### 🧱 Updated Dependencies
+
+- Updated @mdreal/nestjs-grammy to 1.1.6
+
+### ❤️ Thank You
+
+- MDReal32 @MDReal32
+
 ## 1.1.5 (2026-10-28)
 
 ### 🚀 Features
