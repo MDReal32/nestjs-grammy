@@ -1,6 +1,6 @@
 {
   "name": "@mdreal/nestjs-grammy-testing",
-  "version": "2.0.0-next.1",
+  "version": "2.0.0-next.2",
   "description": "Testing utilities for @mdreal/nestjs-grammy — a mock Telegram API, a NestJS-aware bot tester, and semantic matchers with Jest, Vitest, Bun, and standalone-expect integrations.",
   "keywords": [
     "nestjs",
@@ -93,7 +93,7 @@
     "vitest": "~5.1.0"
   },
   "peerDependencies": {
-    "@mdreal/nestjs-grammy": "^2.0.0-next.1",
+    "@mdreal/nestjs-grammy": "^2.0.0-next.2",
     "@nestjs/testing": "^10 || ^11 || ^12",
     "@playwright/test": ">=1.30",
     "expect": ">=28",
