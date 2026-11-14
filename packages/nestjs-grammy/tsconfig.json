@@ -22,9 +22,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "baseUrl": "./",
     "paths": {
-      "@mdreal/nestjs-grammy": ["src/main.ts"]
+      "@mdreal/nestjs-grammy": ["./src/main.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]
