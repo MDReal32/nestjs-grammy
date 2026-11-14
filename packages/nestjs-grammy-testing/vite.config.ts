@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import dtsPlugin from "vite-plugin-dts";
 
 export default defineConfig({
-  plugins: [swc.vite(), dtsPlugin({ rollupTypes: true })],
+  plugins: [swc.vite(), dtsPlugin({ bundleTypes: true, include: ["src"] })],
   ssr: {
     external: ["@mdreal/nestjs-grammy", "@nestjs/common", "@nestjs/core", "@nestjs/testing", "grammy"]
   },

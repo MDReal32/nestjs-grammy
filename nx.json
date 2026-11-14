@@ -21,10 +21,17 @@
       }
     },
     {
+      "plugin": "@nx/js/typescript",
+      "options": {
+        "typecheck": {
+          "targetName": "vite:typecheck"
+        }
+      }
+    },
+    {
       "plugin": "@nx/vite/plugin",
       "options": {
         "buildTargetName": "vite:build",
-        "testTargetName": "test",
         "serveTargetName": "serve",
         "devTargetName": "dev",
         "previewTargetName": "preview",
@@ -33,12 +40,20 @@
         "buildDepsTargetName": "build-deps",
         "watchDepsTargetName": "watch-deps"
       }
+    },
+    {
+      "plugin": "@nx/vitest",
+      "options": {
+        "testTargetName": "test"
+      }
     }
   ],
   "release": {
     "projects": ["packages/*"],
     "projectsRelationship": "independent",
-    "releaseTagPattern": "{projectName}@{version}",
+    "releaseTag": {
+      "pattern": "{projectName}@{version}"
+    },
     "version": {
       "conventionalCommits": true
     },
@@ -51,5 +66,8 @@
       "commitMessage": "chore(release): publish {version}"
     }
   },
-  "neverConnectToCloud": true
+  "neverConnectToCloud": true,
+  "affected": {
+    "legacy": true
+  }
 }

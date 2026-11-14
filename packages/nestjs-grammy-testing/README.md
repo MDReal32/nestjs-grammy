@@ -262,6 +262,8 @@ export default defineConfig({
 });
 ```
 
+Jest with NestJS 12: NestJS 12 ships ESM only, which Jest's CommonJS loader cannot `require` by default. On Node 24.9+, run Jest with `NODE_OPTIONS=--experimental-vm-modules` (for example `"test": "NODE_OPTIONS=--experimental-vm-modules jest"`) so it loads NestJS natively through `require(esm)`; no `node_modules` transform is needed. NestJS 10/11 need no change.
+
 Each entry also re-exports `registerGrammyMatchers`, `grammyMatchers`, and the
 `GrammyMatcherAssertions` type if you need to wire things up manually. For a runner not
 listed above, use the `/expect` entry (it drives the standalone [`expect`](https://www.npmjs.com/package/expect) package, which most runners can adopt).

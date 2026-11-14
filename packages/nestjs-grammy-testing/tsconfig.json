@@ -15,9 +15,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": "./",
     "paths": {
-      "@mdreal/nestjs-grammy-testing": ["src/main.ts"]
+      "@mdreal/nestjs-grammy-testing": ["./src/main.ts"]
     }
   },
   "include": [
