@@ -76,7 +76,7 @@ jobs:
           git fetch --tags --quiet origin || true
           # Latest stable tag reachable from master: `next` prerelease tags (2.0.0-next.N) live on another branch and
           # sort above 1.x, which would make every master push look like a package change.
-          last_tag=$(git tag --merged HEAD --list "@mdreal/nestjs-grammy@*" --sort=-v:refname | grep -v -- '-' | head -n1 || true)
+          last_tag=$(git tag --merged HEAD --list "@mdreal/nestjs-grammy@*" --sort=-v:refname | grep -vE '@[0-9]+\.[0-9]+\.[0-9]+-' | head -n1 || true)
           if [ -n "$last_tag" ]; then
             changed=$(git diff --name-only "$last_tag" HEAD -- packages/ | grep -E 'packages/[^/]+/(src/|package\.json)' || true)
             if [ -z "$changed" ]; then
