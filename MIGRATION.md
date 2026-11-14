@@ -38,6 +38,7 @@ changes is how the library runs underneath.
 | `apiPlugins`       | applied once to `bot.api`                                       | applied to `bot.api` at startup **and** to every update's `ctx.api`                                      | [`apiPlugins`](#apiplugins)              |
 | Webhook callback   | built with `webhookCallback(bot, "http")`                       | built with `webhookAdapters.http(bot)`; `@InjectWebhook()` is used the same way                          | [Options](#3-review-module-options)      |
 | Injected instances | `@InjectBot()` / `@InjectApi()` return grammY 1.x `Bot` / `Api` | return grammY 2.0 `Bot` / `Api`, so direct calls follow the grammY 2.0 API                               | [Handlers](#2-update-your-handlers)      |
+| NestJS peer        | `^10 \|\| ^11`                                                  | `^10 \|\| ^11 \|\| ^12` (also `@nestjs/testing` in the testing package)                                  | [Requirements](#requirements)            |
 
 ### `@mdreal/nestjs-grammy-testing`
 
@@ -49,7 +50,7 @@ changes is how the library runs underneath.
 | Mock transformer | registered with `api.config.use(...)`        | registered with `api.transform(...)`, using the `(prev, data, signal)` signature          | [Custom mock wiring](#custom-mock-wiring) |
 | Bot info         | set through `bot.botInfo`                    | set through `bot.me`; `createTestBotInfo()` also fills `supports_guest_queries` (`false`) | [Fixtures](#fixtures)                     |
 | Chat fixtures    | `TestChatOptions` extends `Chat.PrivateChat` | `TestChatOptions` extends `Chat.Private`; `createTestChat()` returns `Chat.Private`       | [Fixtures](#fixtures)                     |
-| Jest             | works as is                                  | needs a transform for ESM-only grammY                                                     | [Jest](#jest)                             |
+| Jest             | works as is                                  | needs `--experimental-vm-modules` (NestJS 12) or a transform for ESM-only grammY          | [Jest](#jest)                             |
 
 ## Requirements
 
@@ -58,7 +59,7 @@ changes is how the library runs underneath.
 | grammY      | `^1` from npm      | `2.0.0-beta.8` from JSR (`npm:@jsr/grammyjs__grammy@2.0.0-beta.8`) |
 | Node.js     | `>=22`             | `>=22`; CommonJS apps need `>=22.12` to `require` ESM grammY       |
 | Module type | CommonJS or ESM    | CommonJS or ESM; grammY itself is **ESM only**                     |
-| NestJS      | `^10 \|\| ^11`     | unchanged                                                          |
+| NestJS      | `^10 \|\| ^11`     | `^10 \|\| ^11 \|\| ^12`; NestJS 12 is ESM only, see [Jest](#jest)  |
 | Runner      | `@grammyjs/runner` | removed; grammY's built-in `bot.start()` is used                   |
 
 ## 1. Install grammY 2.0 from JSR
@@ -211,8 +212,28 @@ What this means for you:
 
 ### Jest
 
-grammY 2.0 is ESM only, which Jest's CommonJS loader cannot `require`. Let `ts-jest` compile grammY and its `@jsr`
-dependencies:
+grammY 2.0 is ESM only, and so is NestJS 12. Jest's CommonJS loader cannot `require` either of them out of the box.
+
+**Node 24.9+ (required for NestJS 12 with Jest):** run Jest with `--experimental-vm-modules` so it loads ESM packages
+natively through `require(esm)`. Jest then needs no transform for `node_modules`:
+
+```json
+// package.json
+"test": "NODE_OPTIONS=--experimental-vm-modules jest"
+```
+
+```js
+// jest.config.js
+module.exports = {
+  transform: { "^.+\\.ts$": "ts-jest" },
+  setupFilesAfterEnv: ["@mdreal/nestjs-grammy-testing/jest"]
+};
+```
+
+`NODE_OPTIONS=...` works as is on macOS/Linux and in yarn and bun scripts. With npm or pnpm on Windows, use
+[`cross-env`](https://www.npmjs.com/package/cross-env).
+
+**NestJS 10/11 on Node 22:** let `ts-jest` compile grammY and its `@jsr` dependencies to CommonJS instead:
 
 ```js
 // jest.config.js
@@ -256,6 +277,8 @@ bot.use(createMockApiMiddleware(mockApi)); // new: covers ctx.api
   expect peer warnings and test conversation flows before relying on them.
 - Polling and webhook mode have been tested through the testing package only, not yet against the real Telegram API.
 - The `next` line follows grammY's beta and may change with later grammY 2.0 betas.
+- NestJS 12 with Jest has no known setup on Node 22: the `ts-jest` transform cannot compile NestJS's `import.meta`, and
+  Jest's native ESM loading needs Node 24.9+ (tested on Node 26 only). Use Vitest, `node:test` or Bun there, or Node 24.9+.
 
 ## Checklist
 
@@ -267,6 +290,6 @@ bot.use(createMockApiMiddleware(mockApi)); // new: covers ctx.api
 - [ ] Update `apiPlugins` to `api.transform(...)` and make them safe to run per update
 - [ ] Check `polling` options, which now take effect
 - [ ] Move slow work off the update path (polling is sequential)
-- [ ] Update Jest config for ESM-only grammY
+- [ ] Update Jest config for ESM-only grammY (and NestJS 12)
 - [ ] Use Node `>=22.12` if your app is CommonJS
 - [ ] Test `@Conversation()` flows

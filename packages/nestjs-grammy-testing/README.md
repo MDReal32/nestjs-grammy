@@ -282,7 +282,7 @@ export default defineConfig({
 });
 ```
 
-Jest with grammY 2.0: grammY v2 ships ESM only, which Jest's CommonJS loader cannot `require`. Let `ts-jest` compile it (and its `@jsr` dependencies) to CommonJS:
+Jest with grammY 2.0: grammY v2 ships ESM only, and so does NestJS 12. With NestJS 12 (or on Node 24.9+), run Jest with `NODE_OPTIONS=--experimental-vm-modules` so it loads them natively, and keep only the `ts-jest` transform for your own `.ts` files. With NestJS 10/11 on Node 22, let `ts-jest` compile grammY (and its `@jsr` dependencies) to CommonJS instead. See the [migration guide](https://github.com/MDReal32/nestjs-grammy/blob/next/MIGRATION.md#jest) for both setups:
 
 ```js
 // jest.config.js

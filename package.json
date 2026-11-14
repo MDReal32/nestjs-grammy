@@ -14,14 +14,16 @@
     "typecheck": "nx run-many -t typecheck"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.3",
-    "@nx/vite": "22.7.5",
-    "@nx/web": "22.7.5",
-    "@vitest/ui": "~4.1.7",
+    "@biomejs/biome": "2.6.7",
+    "@nx/js": "24.0.6",
+    "@nx/vite": "24.0.6",
+    "@nx/vitest": "24.0.6",
+    "@nx/web": "24.0.6",
+    "@vitest/ui": "~5.1.0",
     "jiti": "2.7.0",
-    "nx": "22.7.12",
-    "vite": "^8.3.5",
-    "vitest": "~4.1.12"
+    "nx": "24.0.6",
+    "vite": "^8.3.8",
+    "vitest": "~5.1.0"
   },
   "packageManager": "yarn@4.15.0",
   "engines": {

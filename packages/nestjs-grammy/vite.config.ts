@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import dtsPlugin from "vite-plugin-dts";
 
 export default defineConfig({
-  plugins: [swc.vite(), dtsPlugin({ rollupTypes: true })],
+  plugins: [swc.vite(), dtsPlugin({ bundleTypes: true })],
   build: {
     outDir: "build",
     ssr: true,

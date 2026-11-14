@@ -1,13 +1,12 @@
+// grammY v2 and NestJS 12 ship ESM only: the test scripts run Jest with --experimental-vm-modules, so it loads them
+// natively through require(esm) and only this project's own .ts files need ts-jest.
 module.exports = {
   rootDir: "../../src",
   moduleFileExtensions: ["js", "json", "ts"],
   testEnvironment: "node",
   testRegex: ".*\\.spec\\.ts$",
   transform: {
-    // grammY v2 ships ESM only; compile it (and its @jsr dependencies) to CommonJS for Jest
-    "/node_modules/.+\\.js$": ["ts-jest", { tsconfig: { allowJs: true, module: "commonjs", target: "es2022" } }],
-    "^.+\\.(t|j)s$": ["ts-jest", { tsconfig: "<rootDir>/../tsconfig.json" }]
+    "^.+\\.ts$": ["ts-jest", { tsconfig: "<rootDir>/../tsconfig.json" }]
   },
-  transformIgnorePatterns: ["/node_modules/(?!(grammy|@jsr)/)"],
   setupFilesAfterEnv: ["@mdreal/nestjs-grammy-testing/jest"]
 };
